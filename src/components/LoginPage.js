@@ -139,12 +139,12 @@ const LoginPage = () => {
         <span>OR</span>
       </div>
       <div className="social-buttons">
-        <button className="google-button" onClick={() => window.location.href = "${process.env.REACT_APP_API_URL}/auth/google"}>
+        <button className="google-button" onClick={() => window.location.href = `${process.env.REACT_APP_API_URL}/auth/google`}>
           <img src={googleLogo} alt="Google Logo" className="button-logo" />
           Continue with Google
         </button>
 
-        <button className="github-button" onClick={() => window.location.href = "${process.env.REACT_APP_API_URL}/auth/github"}>
+        <button className="github-button" onClick={() => window.location.href = `${process.env.REACT_APP_API_URL}/auth/github`}>
           <img src={githubLogo} alt="GitHub Logo" className="button-logo" />
           Continue with GitHub
         </button>
@@ -154,3 +154,5 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+
+/* eof */

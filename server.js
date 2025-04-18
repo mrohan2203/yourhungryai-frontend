@@ -87,7 +87,7 @@ passport.deserializeUser((obj, done) => done(null, obj));
 passport.use(new GoogleStrategy({
   clientID: process.env.REACT_APP_GOOGLE_CLIENT_ID,
   clientSecret: process.env.REACT_APP_GOOGLE_CLIENT_SECRET,
-  callbackURL: "https://api.yourhungryai.com/auth/google/callback"
+  callbackURL: "https://api.yourhungry.net/auth/google/callback"
 }, async (accessToken, refreshToken, profile, done) => {
   const email = profile.emails[0].value;
   let user = await User.findOne({ email });
@@ -103,7 +103,7 @@ passport.use(new GoogleStrategy({
 passport.use(new GitHubStrategy({
   clientID: process.env.REACT_APP_GITHUB_CLIENT_ID,
   clientSecret: process.env.REACT_APP_GITHUB_CLIENT_SECRET,
-  callbackURL: "https://api.yourhungryai.com/auth/github/callback"
+  callbackURL: "https://api.yourhungry.net/auth/github/callback"
 }, async (accessToken, refreshToken, profile, done) => {
   const email = profile.emails?.[0]?.value || `${profile.username}@github.com`;
   
@@ -124,7 +124,7 @@ app.get('/auth/google/callback', passport.authenticate('google', {
   session: false
 }), (req, res) => {
   const token = jwt.sign({ email: req.user.email }, 'your-secret-key', { expiresIn: '1h' });
-  res.redirect(`https://yourhungryai.com/login?token=${token}&email=${req.user.email}`);
+  res.redirect(`https://yourhungry.net/login?token=${token}&email=${req.user.email}`);
 });
 
 app.get('/auth/github', passport.authenticate('github', { scope: [ 'user:email' ] }));
@@ -133,7 +133,7 @@ app.get('/auth/github/callback',
   passport.authenticate('github', { failureRedirect: '/login', session: false }),
   (req, res) => {
     const token = jwt.sign({ email: req.user.email }, 'your-secret-key', { expiresIn: '1h' });
-    res.redirect(`https://yourhungryai.com/login?token=${token}&email=${req.user.email}`);
+    res.redirect(`https://yourhungry.net/login?token=${token}&email=${req.user.email}`);
   }
 );
 
