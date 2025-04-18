@@ -60,8 +60,8 @@ passport.deserializeUser((obj, done) => done(null, obj));
 
 // Google OAuth strategy
 passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  clientID: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+  clientSecret: process.env.REACT_APP_GOOGLE_CLIENT_SECRET,
   callbackURL: "https://api.yourhungryai.com/auth/google/callback"
 }, async (accessToken, refreshToken, profile, done) => {
   const email = profile.emails[0].value;
@@ -76,8 +76,8 @@ passport.use(new GoogleStrategy({
 }));
 
 passport.use(new GitHubStrategy({
-  clientID: process.env.GITHUB_CLIENT_ID,
-  clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  clientID: process.env.REACT_APP_GITHUB_CLIENT_ID,
+  clientSecret: process.env.REACT_APP_GITHUB_CLIENT_SECRET,
   callbackURL: "https://api.yourhungryai.com/auth/github/callback"
 }, async (accessToken, refreshToken, profile, done) => {
   const email = profile.emails?.[0]?.value || `${profile.username}@github.com`;
@@ -249,7 +249,7 @@ app.post('/update-password', async (req, res) => {
 });
 
 // Start server
-const PORT = 5001;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
