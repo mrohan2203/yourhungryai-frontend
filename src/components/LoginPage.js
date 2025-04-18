@@ -43,7 +43,7 @@ const LoginPage = () => {
       localStorage.setItem('email', email);
       navigate('/chatbot');
     }
-  }, [navigate]); // ✅ added navigate to dependencies
+  }, [navigate]);
 
   const handleSubmit = async () => {
     if (!email || !password) {

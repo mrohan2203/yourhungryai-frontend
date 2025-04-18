@@ -140,14 +140,11 @@ app.get('/auth/google',
 );
 
 app.get('/auth/google/callback',
-  passport.authenticate('google', {
-    failureRedirect: '/login', // Or an error page
-    session: true
-  }),
+  passport.authenticate('google', { failureRedirect: '/login' }),
   (req, res) => {
-    // Redirect to frontend with token if needed
-    const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET);
-    res.redirect(`https://yourhungry.net/chatbot?token=${token}&email=${req.user.email}`);
+    const token = jwt.sign({ email: req.user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const redirectUrl = `https://yourhungry.net/login?token=${token}&email=${req.user.email}`;
+    res.redirect(redirectUrl);
   }
 );
 
@@ -156,11 +153,12 @@ app.get("/auth/github",
   passport.authenticate("github", { scope: ["user:email"] })
 );
 
-app.get("/auth/github/callback",
-  passport.authenticate("github", { failureRedirect: "/login", session: true }),
+app.get('/auth/github/callback',
+  passport.authenticate('github', { failureRedirect: '/login' }),
   (req, res) => {
-    const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET);
-    res.redirect(`https://yourhungry.net/chatbot?token=${token}&email=${req.user.email}`);
+    const token = jwt.sign({ email: req.user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const redirectUrl = `https://yourhungry.net/login?token=${token}&email=${req.user.email}`;
+    res.redirect(redirectUrl);
   }
 );
 
