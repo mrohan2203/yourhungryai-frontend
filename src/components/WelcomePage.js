@@ -6,18 +6,25 @@ const WelcomePage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const email = params.get('email');
+  
+    if (token && email) {
+      localStorage.setItem('token', token);
+      localStorage.setItem('email', email);
+      navigate('/chatbot');
+      return;
+    }
+  
+    const rememberedToken = localStorage.getItem('token');
     const rememberMe = localStorage.getItem('rememberMe');
-    
-    if (token) {
-      // If "Remember me" was checked, auto-redirect to chatbot
-      if (rememberMe === 'true') {
-        navigate('/chatbot');
-      } else {
-        // Clear auth data if not remembered
-        localStorage.removeItem('token');
-        localStorage.removeItem('email');
-      }
+  
+    if (rememberedToken && rememberMe === 'true') {
+      navigate('/chatbot');
+    } else {
+      localStorage.removeItem('token');
+      localStorage.removeItem('email');
     }
   }, [navigate]);
 
