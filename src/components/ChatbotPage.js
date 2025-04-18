@@ -119,11 +119,11 @@ const ChatbotPage = () => {
     setCurrentChatId(newChat.id);
     setMessages([]);
   };
-  
+
   const loadChat = (chatId) => {
     const selectedChat = chatLogs.find(chat => chat.id === chatId);
     if (selectedChat) {
-      setCurrentChatId(selectedChat.id);
+      setCurrentChatId(chatId);
       setMessages(selectedChat.messages);
     }
   };
