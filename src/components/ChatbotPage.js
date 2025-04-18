@@ -196,9 +196,18 @@ const ChatbotPage = () => {
       timestamp: new Date().toISOString()
     };
     const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
+    setMessages(newMessages);    
     setMessage('');
     setIsTyping(true);
+
+    // Update the correct chat in chatLogs
+    setChatLogs(prev => 
+      prev.map(chat => 
+        chat.id === currentChatId 
+          ? { ...chat, messages: [...chat.messages, userMessage] } 
+          : chat
+      )
+    );
 
     try {
       const culinaryPrompt = `
