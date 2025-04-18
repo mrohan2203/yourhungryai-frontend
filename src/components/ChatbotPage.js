@@ -186,17 +186,18 @@ const ChatbotPage = () => {
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
-
+  
     const userMessage = { 
       text: message, 
       sender: 'user',
       timestamp: new Date().toISOString()
     };
+  
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setMessage('');
     setIsTyping(true);
-
+  
     try {
       const culinaryPrompt = `
         You are a world-class culinary assistant. Provide detailed response with:
@@ -208,7 +209,7 @@ const ChatbotPage = () => {
         
         Query: "${message}"
       `;
-
+  
       const textResponse = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
@@ -224,17 +225,17 @@ const ChatbotPage = () => {
         temperature: 0.7,
         max_tokens: 1000
       });
-
+  
       let recipeText = textResponse.choices[0]?.message?.content || 
         "Sorry, I couldn't generate a response. Please try again with a culinary question.";
-
+  
       let imageData = null;
       if (!recipeText.includes("I specialize only in food-related topics")) {
         const dishName = extractDishName(recipeText);
         imageData = await generateRecipeImage(dishName);
         recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
       }
-
+  
       const botMessage = { 
         text: recipeText,
         sender: 'bot',
@@ -242,10 +243,10 @@ const ChatbotPage = () => {
         markdown: true,
         image: imageData
       };
-
+  
       const updatedMessages = [...newMessages, botMessage];
       setMessages(updatedMessages);
-
+  
       typeWriterEffect(recipeText, (displayedText) => {
         setMessages(prev => {
           const newMessages = [...prev];
@@ -258,20 +259,22 @@ const ChatbotPage = () => {
           return newMessages;
         });
       });
-
+  
       const updatedChat = {
         id: currentChatId,
         title: message.slice(0, 30) + (message.length > 30 ? '...' : '') || 'New Chat',
         messages: updatedMessages,
         createdAt: new Date().toISOString()
       };
-
+  
       setChatLogs(prev => prev.map(chat => chat.id === currentChatId ? updatedChat : chat));
-
+  
       const email = localStorage.getItem('email');
       if (email) {
         await axios.post(`${process.env.REACT_APP_API_URL}/chatlogs/${email}`, {
-          chatLogs: chatLogs.map(chat => chat.id === currentChatId ? updatedChat : chat)
+          chatLogs: chatLogs.map(chat => 
+            chat.id === currentChatId ? updatedChat : chat
+          )
         });
       }
     } catch (error) {
