@@ -1,0 +1,147 @@
+/* SignupPage.css */
+
+/* Container for the entire signup page */
+.signup-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #ffffff; /* White background */
+  font-family: Arial, sans-serif;
+  color: #2E3339; /* Dark gray text */
+  padding: 1rem;
+}
+
+/* Heading */
+.signup-container p {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #2E3339; /* Dark gray for "YourAI says Hello!" */
+}
+
+/* Input fields */
+.signup-container input {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #0FA474; /* Green border */
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  background-color: #ffffff; /* White background */
+  color: #2E3339; /* Dark gray text */
+}
+
+.signup-container input:focus {
+  border-color: #0d8e66; /* Darker green on focus */
+}
+
+/* Continue button */
+.signup-container .continue-button {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.8rem;
+  font-size: 1rem;
+  background-color: #0FA474; /* Green background */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.signup-container .continue-button:hover {
+  background-color: #0d8e66; /* Darker green on hover */
+}
+
+/* Login text */
+.signup-container .login-text {
+  font-size: 0.9rem;
+  color: #2E3339; /* Dark gray text */
+  margin-bottom: 1rem;
+  font-weight: normal;
+}
+
+.signup-container .login-text span {
+  color: #0FA474; /* Green text for "Login" */
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Divider */
+.or-divider {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
+  margin: 1rem 0;
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #C3C8CF; /* Light gray divider */
+}
+
+.or-divider span {
+  padding: 0 10px;
+  color: #2E3339; /* Dark gray text for "OR" */
+}
+
+/* Social buttons */
+.social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.social-buttons button {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 0.9rem;
+  background-color: #ffffff; /* White background */
+  color: #2E3339; /* Dark gray text */
+  border: 1px solid #C3C8CF; /* Light gray border */
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.social-buttons button:hover {
+  background-color: #F7F7F7; /* Light gray background on hover */
+}
+
+/* Button logos */
+.button-logo {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+}
+
+.error {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.8rem;
+  background-color: rgba(255, 0, 0, 0.1); /* Light red background */
+  color: #ff0000; /* Red text */
+  text-align: center;
+  font-size: 0.75rem; /* Reduced font size */
+  font-weight: normal; /* Ensure text is not bold */
+  margin-bottom: 1rem;
+  border-radius: 5px; /* Rounded corners */
+  border: 1px solid #ff0000; /* Red border */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center content horizontally */
+  gap: 0.5rem; /* Space between icon and text */
+}

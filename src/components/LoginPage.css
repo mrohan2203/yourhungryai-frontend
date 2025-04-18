@@ -1,0 +1,212 @@
+/* LoginPage.css */
+
+/* Container for the entire login page */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #ffffff; /* White background */
+  font-family: Arial, sans-serif;
+  color: #2E3339; /* Dark gray text */
+  padding: 1rem;
+}
+
+/* Success message container */
+.success-message-container {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.8rem;
+  background-color: rgba(15, 164, 116, 0.1); /* Light green background */
+  color: #0FA474; /* Green text */
+  text-align: center;
+  font-size: 0.75rem; /* Consistent font size */
+  margin-bottom: 1rem;
+  border-radius: 5px; /* Rounded corners */
+  border: 1px solid #0FA474; /* Green border */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center content horizontally */
+  gap: 0.5rem; /* Space between icon and text */
+}
+
+.error {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.8rem;
+  background-color: rgba(255, 0, 0, 0.1); /* Light red background */
+  color: #ff0000; /* Red text */
+  text-align: center;
+  font-size: 0.75rem; /* Reduced font size */
+  font-weight: normal; /* Ensure text is not bold */
+  margin-bottom: 1rem;
+  border-radius: 5px; /* Rounded corners */
+  border: 1px solid #ff0000; /* Red border */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center content horizontally */
+  gap: 0.5rem; /* Space between icon and text */
+}
+
+/* Message icon */
+.message-icon {
+  width: 16px; /* Icon size */
+  height: 16px; /* Icon size */
+}
+
+/* Heading */
+.login-container p {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #2E3339; /* Dark gray for "Welcome back" */
+}
+
+/* Input fields */
+.login-container input[type="email"],
+.login-container input[type="password"] {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #0FA474; /* Green border */
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  background-color: #ffffff; /* White background */
+  color: #2E3339; /* Dark gray text */
+}
+
+.login-container input[type="email"]:focus,
+.login-container input[type="password"]:focus {
+  border-color: #0d8e66; /* Darker green on focus */
+}
+
+/* Remember me section */
+.remember-me {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 1rem;
+}
+
+.remember-me input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+.remember-me label {
+  font-size: 0.9rem;
+  color: #2E3339; /* Dark gray text */
+}
+
+/* Continue button */
+.login-container .continue-button {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.8rem;
+  font-size: 1rem;
+  background-color: #0FA474; /* Green background */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.login-container .continue-button:hover {
+  background-color: #0d8e66; /* Darker green on hover */
+}
+
+/* Signup text */
+.login-container .signup-text {
+  font-size: 0.9rem;
+  color: #2E3339; /* Dark gray text */
+  margin-bottom: 1rem;
+  font-weight: normal;
+}
+
+.login-container .forgot-password-text {
+  font-size: 0.9rem;
+  color: #2E3339; /* Dark gray text */
+  margin-bottom: 0.25rem;
+  font-weight: normal;
+}
+
+.login-container .signup-text span {
+  color: #0FA474; /* Green text for "Sign up" */
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.login-container .forgot-password-text span {
+  color: #0FA474; /* Green text for "Sign up" */
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Divider */
+.or-divider {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
+  margin: 1rem 0;
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #C3C8CF; /* Light gray divider */
+}
+
+.or-divider span {
+  padding: 0 10px;
+  color: #2E3339; /* Dark gray text for "OR" */
+}
+
+/* Social buttons */
+.social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.social-buttons button {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 0.9rem;
+  background-color: #ffffff; /* White background */
+  color: #2E3339; /* Dark gray text */
+  border: 1px solid #C3C8CF; /* Light gray border */
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.social-buttons button:hover {
+  background-color: #F7F7F7; /* Light gray background on hover */
+}
+
+/* Button logos */
+.button-logo {
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+}
+
+/* Error message */
+.error {
+  color: #ff0000; /* Red text for error messages */
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
