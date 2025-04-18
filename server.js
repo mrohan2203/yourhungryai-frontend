@@ -8,11 +8,20 @@ const passport = require('passport');
 const session = require('express-session');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const GitHubStrategy = require('passport-github2').Strategy;
-require('dotenv').config(); // Load environment variables
+require('dotenv').config();
 
 const app = express();
+
+// ✅ CORS must be defined BEFORE routes
+app.use(cors({
+  origin: ['https://yourhungry.net', 'https://www.yourhungry.net'],
+  credentials: true
+}));
+
 app.use(express.json());
-app.use(cors({origin: ['https://yourhungry.net','https://www.yourhungry.net'], credentials: true}));
+app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
