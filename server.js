@@ -12,6 +12,7 @@ require('dotenv').config();
 
 const app = express();
 
+app.options('*', cors()); // Handles preflight
 // ✅ CORS must be defined BEFORE routes
 app.use(cors({
   origin: ['https://yourhungry.net', 'https://www.yourhungry.net'],
