@@ -12,7 +12,7 @@ require('dotenv').config(); // Load environment variables
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin: 'https://yourhungryai.com', credentials: true}));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
