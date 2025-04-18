@@ -10,6 +10,8 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const GitHubStrategy = require('passport-github2').Strategy;
 require('dotenv').config();
 
+const app = express(); // ✅ Add this!
+
 const allowedOrigins = ['https://yourhungry.net', 'https://www.yourhungry.net'];
 
 app.use(cors({
@@ -23,7 +25,6 @@ app.use(cors({
   credentials: true
 }));
 
-// Add this to handle preflight requests properly:
 app.options('*', cors());
 
 app.use(express.json());
