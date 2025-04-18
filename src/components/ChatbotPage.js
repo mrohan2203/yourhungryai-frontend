@@ -341,7 +341,7 @@ const ChatbotPage = () => {
                 </li>
                 <li onClick={redirectToDiscord}>
                   <img src={discordIcon} alt="Discord" className="sidebar-icon" />
-                  YourHungryAI Discord
+                  YourHungry AI Discord
                 </li>
                 <li onClick={handleLogout}>
                   <img src={logoutIcon} alt="Log out" className="sidebar-icon" />
