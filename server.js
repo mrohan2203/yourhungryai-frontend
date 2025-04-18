@@ -83,61 +83,84 @@ app.use(passport.session());
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
 
-// Google OAuth strategy
 passport.use(new GoogleStrategy({
   clientID: process.env.REACT_APP_GOOGLE_CLIENT_ID,
   clientSecret: process.env.REACT_APP_GOOGLE_CLIENT_SECRET,
   callbackURL: "https://api.yourhungry.net/auth/google/callback"
 }, async (accessToken, refreshToken, profile, done) => {
-  const email = profile.emails[0].value;
-  let user = await User.findOne({ email });
+  try {
+    const email = profile.emails?.[0]?.value;
+    if (!email) {
+      return done(new Error("Email not provided by Google"), null);
+    }
 
-  if (!user) {
-    user = new User({ email, password: 'oauth_google' });
-    await user.save();
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = new User({ email, password: 'oauth_google' });
+      await user.save();
+    }
+
+    return done(null, user);
+  } catch (err) {
+    console.error("Google auth error:", err);
+    return done(err, null);
   }
-
-  return done(null, user);
 }));
 
 passport.use(new GitHubStrategy({
   clientID: process.env.REACT_APP_GITHUB_CLIENT_ID,
   clientSecret: process.env.REACT_APP_GITHUB_CLIENT_SECRET,
-  callbackURL: "https://api.yourhungry.net/auth/github/callback"
+  callbackURL: "https://api.yourhungry.net/auth/github/callback",
+  scope: ['user:email']
 }, async (accessToken, refreshToken, profile, done) => {
-  const email = profile.emails?.[0]?.value || `${profile.username}@github.com`;
-  
-  let user = await User.findOne({ email });
-  if (!user) {
-    user = new User({ email, password: 'oauth_github' });
-    await user.save();
-  }
+  try {
+    let email = profile.emails?.[0]?.value;
 
-  return done(null, user);
+    // Fallback: use GitHub username as pseudo email
+    if (!email) {
+      email = `${profile.username}@github.com`;
+    }
+
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = new User({ email, password: 'oauth_github' });
+      await user.save();
+    }
+
+    return done(null, user);
+  } catch (err) {
+    console.error("GitHub auth error:", err);
+    return done(err, null);
+  }
 }));
 
-// Start Google OAuth
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
 
-// Handle Google OAuth callback
 app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: 'https://yourhungry.net/login' }),
+  passport.authenticate('google', {
+    failureRedirect: '/login', // Or an error page
+    session: true
+  }),
   (req, res) => {
-    // 🔥 Generate JWT token (or however you authenticate)
-    const token = jwt.sign({ email: req.user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-    // ✅ Redirect back to frontend with token and email
-    res.redirect(`https://yourhungry.net?token=${token}&email=${req.user.email}`);
+    // Redirect to frontend with token if needed
+    const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET);
+    res.redirect(`https://yourhungry.net/chatbot?token=${token}&email=${req.user.email}`);
   }
 );
 
-app.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
+// GitHub
+app.get("/auth/github",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
 
-app.get('/auth/github/callback',
-  passport.authenticate('github', { failureRedirect: 'https://yourhungry.net/login' }),
+app.get("/auth/github/callback",
+  passport.authenticate("github", { failureRedirect: "/login", session: true }),
   (req, res) => {
-    const token = jwt.sign({ email: req.user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.redirect(`https://yourhungry.net?token=${token}&email=${req.user.email}`);
+    const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET);
+    res.redirect(`https://yourhungry.net/chatbot?token=${token}&email=${req.user.email}`);
   }
 );
 
