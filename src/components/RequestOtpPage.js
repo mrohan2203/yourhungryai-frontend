@@ -17,7 +17,7 @@ const RequestOtpPage = () => {
     }
 
     try {
-      const response = await fetch('${process.env.REACT_APP_API_URL}/generate-otp', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/generate-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })

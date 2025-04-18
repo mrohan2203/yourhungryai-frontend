@@ -27,7 +27,7 @@ const SetNewPasswordPage = () => {
     }
 
     try {
-      const response = await fetch('${process.env.REACT_APP_API_URL}/update-password', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/update-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, newPassword })
