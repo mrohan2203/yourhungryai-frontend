@@ -109,19 +109,22 @@ const ChatbotPage = () => {
   };
 
   const handleNewChat = () => {
-    setIsResetting(true);
+    const newChat = {
+      id: uuidv4(),
+      title: "New Chat",
+      messages: [],
+      createdAt: new Date().toISOString()
+    };
+    setChatLogs(prev => [newChat, ...prev]);
+    setCurrentChatId(newChat.id);
     setMessages([]);
-    setTimeout(() => {
-      createNewChat();
-      setIsResetting(false);
-    }, 300);
   };
-
+  
   const loadChat = (chatId) => {
-    const chatToLoad = chatLogs.find(chat => chat.id === chatId);
-    if (chatToLoad) {
-      setCurrentChatId(chatId);
-      setMessages(chatToLoad.messages);
+    const selectedChat = chatLogs.find(chat => chat.id === chatId);
+    if (selectedChat) {
+      setCurrentChatId(selectedChat.id);
+      setMessages(selectedChat.messages);
     }
   };
 
