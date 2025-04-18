@@ -10,14 +10,21 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const GitHubStrategy = require('passport-github2').Strategy;
 require('dotenv').config();
 
-const app = express();
+const allowedOrigins = ['https://yourhungry.net', 'https://www.yourhungry.net'];
 
-app.options('*', cors()); // Handles preflight
-// ✅ CORS must be defined BEFORE routes
 app.use(cors({
-  origin: ['https://yourhungry.net', 'https://www.yourhungry.net'],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
+
+// Handle preflight requests
+app.options('*', cors());
 
 app.use(express.json());
 app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: true }));
