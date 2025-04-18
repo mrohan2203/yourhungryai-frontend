@@ -261,9 +261,11 @@ const ChatbotPage = () => {
 
       const updatedChat = {
         id: currentChatId,
-        title: message.slice(0, 30) + (message.length > 30 ? '...' : '') || 'New Chat',
+        title: chatLogs.find(c => c.id === currentChatId)?.title || 
+               (message.slice(0, 30) + (message.length > 30 ? '...' : '')) || 
+               'New Chat',
         messages: updatedMessages,
-        createdAt: new Date().toISOString()
+        createdAt: chatLogs.find(c => c.id === currentChatId)?.createdAt || new Date().toISOString()
       };
 
       setChatLogs(prev => prev.map(chat => chat.id === currentChatId ? updatedChat : chat));
