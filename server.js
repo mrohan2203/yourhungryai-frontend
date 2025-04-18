@@ -116,24 +116,28 @@ passport.use(new GitHubStrategy({
   return done(null, user);
 }));
 
-// OAuth routes
+// Start Google OAuth
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-app.get('/auth/google/callback', passport.authenticate('google', {
-  failureRedirect: '/login',
-  session: false
-}), (req, res) => {
-  const token = jwt.sign({ email: req.user.email }, 'your-secret-key', { expiresIn: '1h' });
-  res.redirect(`https://yourhungry.net/login?token=${token}&email=${req.user.email}`);
-});
+// Handle Google OAuth callback
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: 'https://yourhungry.net/login' }),
+  (req, res) => {
+    // 🔥 Generate JWT token (or however you authenticate)
+    const token = jwt.sign({ email: req.user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-app.get('/auth/github', passport.authenticate('github', { scope: [ 'user:email' ] }));
+    // ✅ Redirect back to frontend with token and email
+    res.redirect(`https://yourhungry.net?token=${token}&email=${req.user.email}`);
+  }
+);
+
+app.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
 
 app.get('/auth/github/callback',
-  passport.authenticate('github', { failureRedirect: '/login', session: false }),
+  passport.authenticate('github', { failureRedirect: 'https://yourhungry.net/login' }),
   (req, res) => {
-    const token = jwt.sign({ email: req.user.email }, 'your-secret-key', { expiresIn: '1h' });
-    res.redirect(`https://yourhungry.net/login?token=${token}&email=${req.user.email}`);
+    const token = jwt.sign({ email: req.user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.redirect(`https://yourhungry.net?token=${token}&email=${req.user.email}`);
   }
 );
 
