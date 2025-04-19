@@ -109,30 +109,18 @@ const ChatbotPage = () => {
   };
 
   const handleNewChat = () => {
-    const newChatId = Date.now().toString();
-    const welcomeMessage = {
-      text: "Hello! I'm your culinary assistant John. Ask me about any world cuisine, recipes, or cooking techniques!",
-      sender: "bot",
-      timestamp: new Date().toISOString(),
-      markdown: true
-    };
-  
-    const newChat = {
-      id: newChatId,
-      title: "New Chat",
-      messages: [welcomeMessage],
-      createdAt: new Date().toISOString()
-    };
-  
-    setChatLogs(prev => [newChat, ...prev]);
-    setCurrentChatId(newChatId);
-    setMessages([welcomeMessage]); // 👈 ensure main content gets updated
+    setIsResetting(true);
+    setMessages([]);
+    setTimeout(() => {
+      createNewChat();
+      setIsResetting(false);
+    }, 300);
   };
 
   const loadChat = (chatId) => {
     const chatToLoad = chatLogs.find(chat => chat.id === chatId);
     if (chatToLoad) {
-      setCurrentChatId(chatToLoad.id);
+      setCurrentChatId(chatId);
       setMessages(chatToLoad.messages);
     }
   };
@@ -197,42 +185,30 @@ const ChatbotPage = () => {
   };
 
   const handleSendMessage = async () => {
-    if (!message.trim() || !currentChatId) return;
-  
+    if (!message.trim()) return;
+
     const userMessage = { 
       text: message, 
       sender: 'user',
       timestamp: new Date().toISOString()
     };
-  
-    const updatedChats = chatLogs.map(chat => {
-      if (chat.id === currentChatId) {
-        return {
-          ...chat,
-          messages: [...chat.messages, userMessage]
-        };
-      }
-      return chat;
-    });
-  
-    setChatLogs(updatedChats);
-    setMessages(prev => [...prev, userMessage]);
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setMessage('');
     setIsTyping(true);
-  
+
     try {
       const culinaryPrompt = `
         You are a world-class culinary assistant. Provide detailed response with:
         1. Dish name as heading (## Dish Name)
-        2. A one-line description about the dish
-        3. Ingredients list (bullet points)
-        4. Preparation method (numbered steps)
-        5. Cooking time and difficulty
+        2. Ingredients list (bullet points)
+        3. Preparation method (numbered steps)
+        4. Cooking time and difficulty
         Format in Markdown.
-  
+        
         Query: "${message}"
       `;
-  
+
       const textResponse = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
@@ -248,56 +224,56 @@ const ChatbotPage = () => {
         temperature: 0.7,
         max_tokens: 1000
       });
-  
+
       let recipeText = textResponse.choices[0]?.message?.content || 
         "Sorry, I couldn't generate a response. Please try again with a culinary question.";
-  
+
       let imageData = null;
       if (!recipeText.includes("I specialize only in food-related topics")) {
         const dishName = extractDishName(recipeText);
         imageData = await generateRecipeImage(dishName);
         recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
       }
-  
-      const botMessage = {
+
+      const botMessage = { 
         text: recipeText,
         sender: 'bot',
         timestamp: new Date().toISOString(),
         markdown: true,
         image: imageData
       };
-  
-      const finalChats = updatedChats.map(chat => {
-        if (chat.id === currentChatId) {
-          return {
-            ...chat,
-            messages: [...chat.messages, userMessage, botMessage]
-          };
-        }
-        return chat;
-      });
-  
-      setChatLogs(finalChats);
-      setMessages(prev => [...prev, botMessage]);
-  
+
+      const updatedMessages = [...newMessages, botMessage];
+      setMessages(updatedMessages);
+
       typeWriterEffect(recipeText, (displayedText) => {
         setMessages(prev => {
           const newMessages = [...prev];
-          newMessages[newMessages.length - 1] = {
-            ...newMessages[newMessages.length - 1],
-            text: displayedText
-          };
+          if (newMessages.length > 0) {
+            newMessages[newMessages.length - 1] = {
+              ...newMessages[newMessages.length - 1],
+              text: displayedText
+            };
+          }
           return newMessages;
         });
       });
-  
+
+      const updatedChat = {
+        id: currentChatId,
+        title: message.slice(0, 30) + (message.length > 30 ? '...' : '') || 'New Chat',
+        messages: updatedMessages,
+        createdAt: new Date().toISOString()
+      };
+
+      setChatLogs(prev => prev.map(chat => chat.id === currentChatId ? updatedChat : chat));
+
       const email = localStorage.getItem('email');
       if (email) {
         await axios.post(`${process.env.REACT_APP_API_URL}/chatlogs/${email}`, {
-          chatLogs: finalChats
+          chatLogs: chatLogs.map(chat => chat.id === currentChatId ? updatedChat : chat)
         });
       }
-  
     } catch (error) {
       console.error('Error:', error);
       setMessages(prev => [...prev, { 
@@ -318,11 +294,7 @@ const ChatbotPage = () => {
     <div className={`chatbot-container ${isResetting ? 'resetting' : ''} ${isLightMode ? 'light-mode' : ''}`}>
       <div className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-collapse" onClick={toggleSidebar}>
-          <img
-            src={arrowIcon}
-            alt="Toggle sidebar"
-            className={`collapse-icon ${isSidebarCollapsed ? 'rotated' : ''}`}
-          />
+          <img src={arrowIcon} alt="Toggle sidebar" className={`collapse-icon ${isSidebarCollapsed ? 'rotated' : ''}`} />
         </div>
         {!isSidebarCollapsed && (
           <>
@@ -333,13 +305,7 @@ const ChatbotPage = () => {
               </button>
               <div className="chat-log-container">
                 {chatLogs.map(chat => (
-                  <div
-                    key={chat.id}
-                    className={`chat-log-item ${chat.id === currentChatId ? 'active' : ''}`}
-                    onClick={() => {
-                      loadChat(chat.id)
-                    }}
-                  >
+                  <div key={chat.id} className={`chat-log-item ${chat.id === currentChatId ? 'active' : ''}`} onClick={() => loadChat(chat.id)}>
                     <img src={chatIcon} alt="Chat" className="chat-log-icon" />
                     {editingChatId === chat.id ? (
                       <input
@@ -355,22 +321,10 @@ const ChatbotPage = () => {
                       <span className="chat-log-title">{chat.title}</span>
                     )}
                     <div className="chat-log-actions">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          startEditing(chat);
-                        }}
-                        className="chat-log-action-btn"
-                      >
+                      <button onClick={(e) => { e.stopPropagation(); startEditing(chat); }} className="chat-log-action-btn">
                         <img src={editIcon} alt="Edit" className="chat-log-action-icon" />
                       </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeChat(chat.id);
-                        }}
-                        className="chat-log-action-btn"
-                      >
+                      <button onClick={(e) => { e.stopPropagation(); removeChat(chat.id); }} className="chat-log-action-btn">
                         <img src={removeIcon} alt="Remove" className="chat-log-action-icon" />
                       </button>
                     </div>
@@ -378,16 +332,11 @@ const ChatbotPage = () => {
                 ))}
               </div>
             </div>
-  
             <div className="sidebar-bottom">
               <ul className="sidebar-list">
                 <div className="divider"></div>
                 <li onClick={toggleLightMode}>
-                  <img
-                    src={isLightMode ? darkIcon : lightIcon}
-                    alt="Theme toggle"
-                    className="sidebar-icon"
-                  />
+                  <img src={isLightMode ? darkIcon : lightIcon} alt="Theme toggle" className="sidebar-icon" />
                   {isLightMode ? 'Dark mode' : 'Light mode'}
                 </li>
                 <li onClick={redirectToDiscord}>
@@ -402,40 +351,21 @@ const ChatbotPage = () => {
               <div className="user-profile">
                 <img src={profileIcon} alt="Profile" className="profile-icon" />
                 <span className="user-email">
-                  {localStorage.getItem('email') || 'user@example.com'}
+                  {localStorage.getItem('email') || "user@example.com"}
                 </span>
               </div>
             </div>
           </>
         )}
       </div>
-  
+
       <div className="main-content">
         <div className="messages-container">
-          {showWelcome && (
-            <div className="message bot-message">
-              <ReactMarkdown>
-                {"Hello! I'm your culinary assistant John. Ask me about any world cuisine, recipes, or cooking techniques!"}
-              </ReactMarkdown>
-            </div>
-            )}
           {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`message ${msg.sender === 'user' ? 'user-message' : 'bot-message'} ${
-                msg.isNewChat ? 'new-chat-message' : ''
-              }`}
-            >
+            <div key={index} className={`message ${msg.sender === 'user' ? 'user-message' : 'bot-message'} ${msg.isNewChat ? 'new-chat-message' : ''}`}>
               {msg.image && (
                 <div className="recipe-image-container">
-                  <img
-                    src={msg.image.url}
-                    alt={msg.image.alt}
-                    className="recipe-image"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
+                  <img src={msg.image.url} alt={msg.image.alt} className="recipe-image" onError={(e) => { e.target.style.display = 'none'; }} />
                 </div>
               )}
               {msg.markdown ? <ReactMarkdown>{msg.text}</ReactMarkdown> : msg.text}
@@ -446,14 +376,12 @@ const ChatbotPage = () => {
               <div className="typing-dot"></div>
               <div className="typing-dot"></div>
               <div className="typing-dot"></div>
-              {isGeneratingImage && (
-                <div className="image-generating-text">Generating image...</div>
-              )}
+              {isGeneratingImage && <div className="image-generating-text">Generating image...</div>}
             </div>
           )}
           <div ref={messagesEndRef} />
         </div>
-  
+
         <div className="chatbar">
           <input
             type="text"
@@ -462,11 +390,7 @@ const ChatbotPage = () => {
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
           />
-          <button
-            className="send-button"
-            disabled={!message.trim() || isTyping}
-            onClick={handleSendMessage}
-          >
+          <button className="send-button" disabled={!message.trim() || isTyping} onClick={handleSendMessage}>
             <img src={sendIcon} alt="Send" className="send-icon" />
           </button>
         </div>
