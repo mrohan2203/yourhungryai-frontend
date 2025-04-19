@@ -412,6 +412,13 @@ const ChatbotPage = () => {
   
       <div className="main-content">
         <div className="messages-container">
+          {showWelcome && (
+            <div className="message bot-message">
+              <ReactMarkdown>
+                {"Hello! I'm your culinary assistant John. Ask me about any world cuisine, recipes, or cooking techniques!"}
+              </ReactMarkdown>
+            </div>
+            )}
           {messages.map((msg, index) => (
             <div
               key={index}
