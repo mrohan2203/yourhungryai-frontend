@@ -109,22 +109,31 @@ const ChatbotPage = () => {
   };
 
   const handleNewChat = () => {
+    const newChatId = Date.now().toString();
+    const welcomeMessage = {
+      text: "Hello! I'm your culinary assistant John. Ask me about any world cuisine, recipes, or cooking techniques!",
+      sender: "bot",
+      timestamp: new Date().toISOString(),
+      markdown: true
+    };
+  
     const newChat = {
-      id: Date.now().toString(),
+      id: newChatId,
       title: "New Chat",
-      messages: [],
+      messages: [welcomeMessage],
       createdAt: new Date().toISOString()
     };
+  
     setChatLogs(prev => [newChat, ...prev]);
-    setCurrentChatId(newChat.id);
-    setMessages([]);
+    setCurrentChatId(newChatId);
+    setMessages([welcomeMessage]); // 👈 ensure main content gets updated
   };
 
   const loadChat = (chatId) => {
-    const selectedChat = chatLogs.find(chat => chat.id === chatId);
-    if (selectedChat) {
+    const chat = chatLogs.find(chat => chat.id === chatId);
+    if (chat) {
       setCurrentChatId(chatId);
-      setMessages(selectedChat.messages);
+      setMessages(chat.messages || []);
     }
   };
 
