@@ -126,14 +126,14 @@ const ChatbotPage = () => {
   
     setChatLogs(prev => [newChat, ...prev]);
     setCurrentChatId(newChatId);
-    setMessages([welcomeMessage]); // 👈 ensure main content gets updated
+    setMessages([]); // 👈 ensure main content gets updated
   };
 
   const loadChat = (chatId) => {
-    const chat = chatLogs.find(chat => chat.id === chatId);
-    if (chat) {
-      setCurrentChatId(chatId);
-      setMessages(chat.messages || []);
+    const chatToLoad = chatLogs.find(chat => chat.id === chatId);
+    if (chatToLoad) {
+      setCurrentChatId(chatToLoad.id);
+      setMessages(chatToLoad.messages);
     }
   };
 
@@ -197,7 +197,7 @@ const ChatbotPage = () => {
   };
 
   const handleSendMessage = async () => {
-    if (!message.trim()) return;
+    if (!message.trim() || !currentChatId) return;
   
     const userMessage = { 
       text: message, 
@@ -205,22 +205,29 @@ const ChatbotPage = () => {
       timestamp: new Date().toISOString()
     };
   
-    const currentChat = chatLogs.find(chat => chat.id === currentChatId);
-    if (!currentChat) return;
+    const updatedChats = chatLogs.map(chat => {
+      if (chat.id === currentChatId) {
+        return {
+          ...chat,
+          messages: [...chat.messages, userMessage]
+        };
+      }
+      return chat;
+    });
   
-    const newMessages = [...currentChat.messages, userMessage];
+    setChatLogs(updatedChats);
+    setMessages(prev => [...prev, userMessage]);
     setMessage('');
     setIsTyping(true);
-    setMessages(newMessages); // update UI view
   
     try {
-      // (same OpenAI code as before)
       const culinaryPrompt = `
         You are a world-class culinary assistant. Provide detailed response with:
         1. Dish name as heading (## Dish Name)
-        2. Ingredients list (bullet points)
-        3. Preparation method (numbered steps)
-        4. Cooking time and difficulty
+        2. A one-line description about the dish
+        3. Ingredients list (bullet points)
+        4. Preparation method (numbered steps)
+        5. Cooking time and difficulty
         Format in Markdown.
   
         Query: "${message}"
@@ -252,7 +259,7 @@ const ChatbotPage = () => {
         recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
       }
   
-      const botMessage = { 
+      const botMessage = {
         text: recipeText,
         sender: 'bot',
         timestamp: new Date().toISOString(),
@@ -260,45 +267,41 @@ const ChatbotPage = () => {
         image: imageData
       };
   
-      const updatedMessages = [...newMessages, botMessage];
-      setMessages(updatedMessages);
+      const finalChats = updatedChats.map(chat => {
+        if (chat.id === currentChatId) {
+          return {
+            ...chat,
+            messages: [...chat.messages, userMessage, botMessage]
+          };
+        }
+        return chat;
+      });
+  
+      setChatLogs(finalChats);
+      setMessages(prev => [...prev, botMessage]);
   
       typeWriterEffect(recipeText, (displayedText) => {
         setMessages(prev => {
           const newMessages = [...prev];
-          if (newMessages.length > 0) {
-            newMessages[newMessages.length - 1] = {
-              ...newMessages[newMessages.length - 1],
-              text: displayedText
-            };
-          }
+          newMessages[newMessages.length - 1] = {
+            ...newMessages[newMessages.length - 1],
+            text: displayedText
+          };
           return newMessages;
         });
       });
   
-      const updatedChat = {
-        ...currentChat,
-        title: message.slice(0, 30) + (message.length > 30 ? '...' : ''),
-        messages: updatedMessages,
-      };
-  
-      setChatLogs(prev =>
-        prev.map(chat => chat.id === currentChatId ? updatedChat : chat)
-      );
-  
       const email = localStorage.getItem('email');
       if (email) {
         await axios.post(`${process.env.REACT_APP_API_URL}/chatlogs/${email}`, {
-          chatLogs: chatLogs.map(chat =>
-            chat.id === currentChatId ? updatedChat : chat
-          ),
+          chatLogs: finalChats
         });
       }
   
     } catch (error) {
       console.error('Error:', error);
-      setMessages(prev => [...prev, {
-        text: 'Sorry, I encountered an error. Please try again with a different culinary question.',
+      setMessages(prev => [...prev, { 
+        text: 'Sorry, I encountered an error. Please try again with a different culinary question.', 
         sender: 'bot',
         timestamp: new Date().toISOString()
       }]);
@@ -334,8 +337,7 @@ const ChatbotPage = () => {
                     key={chat.id}
                     className={`chat-log-item ${chat.id === currentChatId ? 'active' : ''}`}
                     onClick={() => {
-                      setCurrentChatId(chat.id);
-                      setMessages(chat.messages);
+                      loadChat(chat.id)
                     }}
                   >
                     <img src={chatIcon} alt="Chat" className="chat-log-icon" />
