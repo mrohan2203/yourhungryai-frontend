@@ -126,7 +126,7 @@ const ChatbotPage = () => {
   
     setChatLogs(prev => [newChat, ...prev]);
     setCurrentChatId(newChatId);
-    setMessages([]); // 👈 ensure main content gets updated
+    setMessages([welcomeMessage]); // 👈 ensure main content gets updated
   };
 
   const loadChat = (chatId) => {
