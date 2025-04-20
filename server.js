@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const axios = require('axios');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Resend } = require('resend');
@@ -134,6 +135,37 @@ passport.use(new GitHubStrategy({
     return done(err, null);
   }
 }));
+
+app.get('/restaurants/nearby', async (req, res) => {
+  const { dish, lat, lng } = req.query;
+
+  if (!dish || !lat || !lng) {
+    return res.status(400).json({ message: 'Missing dish, latitude, or longitude' });
+  }
+
+  try {
+    const response = await axios.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json', {
+      params: {
+        location: `${lat},${lng}`,
+        radius: 5000, // 5 km
+        keyword: dish,
+        type: 'restaurant',
+        key: process.env.GOOGLE_PLACES_API_KEY
+      }
+    });
+
+    const restaurants = response.data.results.map(place => ({
+      name: place.name,
+      address: place.vicinity || 'Address not available',
+      url: `https://www.google.com/maps/place/?q=place_id:${place.place_id}`
+    }));
+
+    res.json({ restaurants });
+  } catch (err) {
+    console.error('Error fetching from Google Places API:', err.message);
+    res.status(500).json({ message: 'Failed to fetch restaurants' });
+  }
+});
 
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })

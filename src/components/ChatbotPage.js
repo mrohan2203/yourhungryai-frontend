@@ -184,9 +184,29 @@ const ChatbotPage = () => {
     return message.split(' ').slice(0, 5).join(' ');
   };
 
+  const getUserLocation = () => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        return reject("Geolocation not supported by your browser.");
+      }
+  
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        (error) => {
+          reject("Location access denied or unavailable.");
+        }
+      );
+    });
+  };
+  
   const handleSendMessage = async () => {
     if (!message.trim()) return;
-
+  
     const userMessage = { 
       text: message, 
       sender: 'user',
@@ -196,7 +216,7 @@ const ChatbotPage = () => {
     setMessages(newMessages);
     setMessage('');
     setIsTyping(true);
-
+  
     try {
       const culinaryPrompt = `
         You are a world-class culinary assistant. Provide detailed response with:
@@ -205,10 +225,10 @@ const ChatbotPage = () => {
         3. Preparation method (numbered steps)
         4. Cooking time and difficulty
         Format in Markdown.
-        
+  
         Query: "${message}"
       `;
-
+  
       const textResponse = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
@@ -224,17 +244,36 @@ const ChatbotPage = () => {
         temperature: 0.7,
         max_tokens: 1000
       });
-
+  
       let recipeText = textResponse.choices[0]?.message?.content || 
         "Sorry, I couldn't generate a response. Please try again with a culinary question.";
-
+  
       let imageData = null;
+      let nearbyRestaurants = '';
+  
       if (!recipeText.includes("I specialize only in food-related topics")) {
         const dishName = extractDishName(recipeText);
-        imageData = await generateRecipeImage(dishName);
         recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
+        imageData = await generateRecipeImage(dishName);
+  
+        try {
+          const { lat, lng } = await getUserLocation();
+          const res = await axios.get(`${process.env.REACT_APP_API_URL}/restaurants/nearby`, {
+            params: { dish: dishName, lat, lng }
+          });
+  
+          const list = res.data?.restaurants || [];
+          nearbyRestaurants = list.length
+            ? `\n\n**Nearby Restaurants:**\n${list.map((r, i) => `${i + 1}. [${r.name}](${r.url}) - ${r.address}`).join('\n')}`
+            : `\n\n*No nearby restaurants found for "${dishName}".*`;
+        } catch (err) {
+          console.warn("Restaurant fetch failed:", err);
+          nearbyRestaurants = `\n\n*Could not retrieve nearby restaurants due to a location or server issue.*`;
+        }
       }
-
+  
+      recipeText += nearbyRestaurants;
+  
       const botMessage = { 
         text: recipeText,
         sender: 'bot',
@@ -242,10 +281,10 @@ const ChatbotPage = () => {
         markdown: true,
         image: imageData
       };
-
+  
       const updatedMessages = [...newMessages, botMessage];
       setMessages(updatedMessages);
-
+  
       typeWriterEffect(recipeText, (displayedText) => {
         setMessages(prev => {
           const newMessages = [...prev];
@@ -258,16 +297,16 @@ const ChatbotPage = () => {
           return newMessages;
         });
       });
-
+  
       const updatedChat = {
         id: currentChatId,
         title: message.slice(0, 30) + (message.length > 30 ? '...' : '') || 'New Chat',
         messages: updatedMessages,
         createdAt: new Date().toISOString()
       };
-
+  
       setChatLogs(prev => prev.map(chat => chat.id === currentChatId ? updatedChat : chat));
-
+  
       const email = localStorage.getItem('email');
       if (email) {
         await axios.post(`${process.env.REACT_APP_API_URL}/chatlogs/${email}`, {
