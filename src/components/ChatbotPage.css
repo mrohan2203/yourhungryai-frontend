@@ -406,6 +406,17 @@
   scrollbar-color: #444654 #343541;
 }
 
+/* Style links in Markdown content */
+.messages-container a {
+  color: #0FA474;
+  text-decoration: none;
+}
+
+/* Optional: Add hover effect */
+.messages-container a:hover {
+  text-decoration: underline;
+}
+
 .message {
   max-width: 80%;
   padding: 1rem;
