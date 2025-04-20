@@ -5,6 +5,7 @@ import successIcon from "./success-icon.svg";
 import errorIcon from "./error-icon.svg";
 import googleLogo from "./google-icon.svg";
 import githubLogo from "./github-icon.svg";
+import yourhungrylogo from "./yourhungry-logo.png";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -102,6 +103,7 @@ const LoginPage = () => {
           {error}
         </div>
       )}
+      <img src={yourhungrylogo} alt="YourHungry Logo" className="login-logo" />
       <p>
         <b>Welcome back</b>
       </p>
