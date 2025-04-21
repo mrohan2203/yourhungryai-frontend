@@ -207,16 +207,17 @@ const ChatbotPage = () => {
   const handleSendMessage = async () => {
     if (!message.trim()) return;
   
-    const userMessage = { 
-      text: message, 
+    const userMessage = {
+      text: message,
       sender: 'user',
       timestamp: new Date().toISOString()
     };
+  
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setMessage('');
     setIsTyping(true);
-
+  
     // Track GA4 event
     if (typeof window.gtag === 'function') {
       window.gtag('event', 'send_chat_message', {
@@ -224,6 +225,8 @@ const ChatbotPage = () => {
         event_label: message,
       });
     }
+  
+    const isFirstMessage = newMessages.filter(msg => msg.sender === 'user').length === 1;
   
     try {
       const culinaryPrompt = `
@@ -253,7 +256,7 @@ const ChatbotPage = () => {
         max_tokens: 1000
       });
   
-      let recipeText = textResponse.choices[0]?.message?.content || 
+      let recipeText = textResponse.choices[0]?.message?.content ||
         "Sorry, I couldn't generate a response. Please try again with a culinary question.";
   
       let imageData = null;
@@ -262,27 +265,30 @@ const ChatbotPage = () => {
       if (!recipeText.includes("I specialize only in food-related topics")) {
         const dishName = extractDishName(recipeText);
         recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
-        imageData = await generateRecipeImage(dishName);
   
-        try {
-          const { lat, lng } = await getUserLocation();
-          const res = await axios.get(`${process.env.REACT_APP_API_URL}/restaurants/nearby`, {
-            params: { dish: dishName, lat, lng }
-          });
+        if (isFirstMessage) {
+          imageData = await generateRecipeImage(dishName);
   
-          const list = res.data?.restaurants || [];
-          nearbyRestaurants = list.length
-            ? `\n\n**Nearby Restaurants:**\n${list.map((r, i) => `${i + 1}. [${r.name}](${r.url}) - ${r.address}`).join('\n')}`
-            : `\n\n*No nearby restaurants found for "${dishName}".*`;
-        } catch (err) {
-          console.warn("Restaurant fetch failed:", err);
-          nearbyRestaurants = `\n\n*Could not retrieve nearby restaurants due to a location or server issue.*`;
+          try {
+            const { lat, lng } = await getUserLocation();
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/restaurants/nearby`, {
+              params: { dish: dishName, lat, lng }
+            });
+  
+            const list = res.data?.restaurants || [];
+            nearbyRestaurants = list.length
+              ? `\n\n**Nearby Restaurants:**\n${list.map((r, i) => `${i + 1}. [${r.name}](${r.url}) - ${r.address}`).slice(0, 5).join('\n')}`
+              : `\n\n*No nearby restaurants found for "${dishName}".*`;
+          } catch (err) {
+            console.warn("Restaurant fetch failed:", err);
+            nearbyRestaurants = `\n\n*Could not retrieve nearby restaurants due to a location or server issue.*`;
+          }
         }
       }
   
       recipeText += nearbyRestaurants;
   
-      const botMessage = { 
+      const botMessage = {
         text: recipeText,
         sender: 'bot',
         timestamp: new Date().toISOString(),
@@ -323,8 +329,8 @@ const ChatbotPage = () => {
       }
     } catch (error) {
       console.error('Error:', error);
-      setMessages(prev => [...prev, { 
-        text: 'Sorry, I encountered an error. Please try again with a different culinary question.', 
+      setMessages(prev => [...prev, {
+        text: 'Sorry, I encountered an error. Please try again with a different culinary question.',
         sender: 'bot',
         timestamp: new Date().toISOString()
       }]);
