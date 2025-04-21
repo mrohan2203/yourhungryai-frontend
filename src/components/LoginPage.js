@@ -42,6 +42,13 @@ const LoginPage = () => {
     if (token && email) {
       localStorage.setItem('token', token);
       localStorage.setItem('email', email);
+      // ✅ Google Analytics event for OAuth login
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'oauth_login', {
+          event_category: 'Authentication',
+          event_label: email,
+        });
+      }
       navigate('/chatbot');
     }
   }, [navigate]);
