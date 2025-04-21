@@ -206,6 +206,8 @@ const ChatbotPage = () => {
   
   const handleSendMessage = async () => {
     if (!message.trim()) return;
+
+    const lockedChatId = currentChatId; // Lock the chat ID at the time message is sent
   
     const userMessage = {
       text: message,
@@ -303,7 +305,7 @@ const ChatbotPage = () => {
       });
   
       const updatedChat = {
-        id: currentChatId,
+        id: lockedChatId,
         title: message.slice(0, 30) + (message.length > 30 ? '...' : '') || 'New Chat',
         messages: updatedMessages,
         createdAt: new Date().toISOString()
