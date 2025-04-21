@@ -207,22 +207,21 @@ const ChatbotPage = () => {
   const handleSendMessage = async () => {
     if (!message.trim()) return;
   
-    const lockedChatId = currentChatId; // Lock the chat ID at send time
-    const chatToUpdate = chatLogs.find(chat => chat.id === lockedChatId);
-    const chatMessages = chatToUpdate?.messages || [];
+    const lockedChatId = currentChatId; // Lock the chat ID at the time message is sent
+    const timestamp = new Date().toISOString();
   
     const userMessage = {
       text: message,
       sender: 'user',
-      timestamp: new Date().toISOString()
+      timestamp
     };
   
-    const newMessages = [...chatMessages, userMessage];
-    setMessages(newMessages); // Only for visual continuity
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setMessage('');
     setIsTyping(true);
   
-    // GA4 Tracking
+    // Track GA4 event
     if (typeof window.gtag === 'function') {
       window.gtag('event', 'send_chat_message', {
         event_category: 'Chatbot',
@@ -250,8 +249,7 @@ const ChatbotPage = () => {
         max_tokens: 1000
       });
   
-      let recipeText = textResponse.choices[0]?.message?.content ||
-        "Sorry, I couldn't generate a response. Please try again with a culinary question.";
+      let recipeText = textResponse.choices[0]?.message?.content || "Sorry, I couldn't generate a response. Please try again with a culinary question.";
   
       let imageData = null;
       let nearbyRestaurants = '';
@@ -291,60 +289,46 @@ const ChatbotPage = () => {
       };
   
       const finalMessages = [...newMessages, botMessage];
+      setMessages(finalMessages);
   
-      // Update only the locked chat
+      typeWriterEffect(recipeText, (displayedText) => {
+        setMessages(prev => {
+          const newMessages = [...prev];
+          if (newMessages.length > 0) {
+            newMessages[newMessages.length - 1] = {
+              ...newMessages[newMessages.length - 1],
+              text: displayedText
+            };
+          }
+          return newMessages;
+        });
+      });
+  
       const updatedChat = {
-        ...chatToUpdate,
+        id: lockedChatId,
+        title: message.slice(0, 30) + (message.length > 30 ? '...' : '') || 'New Chat',
         messages: finalMessages,
-        title: chatToUpdate.title || message.slice(0, 30) + (message.length > 30 ? '...' : ''),
-        createdAt: chatToUpdate.createdAt || new Date().toISOString()
+        createdAt: timestamp
       };
   
-      // Update chatLogs immutably
-      setChatLogs(prev =>
-        prev.map(chat => chat.id === lockedChatId ? updatedChat : chat)
-      );
+      setChatLogs(prev => prev.map(chat => chat.id === lockedChatId ? updatedChat : chat));
   
-      // Save to DB
       const email = localStorage.getItem('email');
       if (email) {
         await axios.post(`${process.env.REACT_APP_API_URL}/chatlogs/${email}`, {
-          chatLogs: chatLogs.map(chat =>
-            chat.id === lockedChatId ? updatedChat : chat
-          )
-        });
-      }
-  
-      // Lock response only to the chat it came from
-      if (lockedChatId === currentChatId) {
-        setMessages(finalMessages);
-        typeWriterEffect(recipeText, (displayedText) => {
-          setMessages(prev => {
-            const updated = [...prev];
-            if (updated.length > 0) {
-              updated[updated.length - 1] = {
-                ...updated[updated.length - 1],
-                text: displayedText
-              };
-            }
-            return updated;
-          });
+          chatLogs: chatLogs.map(chat => chat.id === lockedChatId ? updatedChat : chat)
         });
       }
   
     } catch (error) {
       console.error('Error:', error);
-      if (lockedChatId === currentChatId) {
-        setMessages(prev => [...prev, {
-          text: 'Sorry, I encountered an error. Please try again with a different culinary question.',
-          sender: 'bot',
-          timestamp: new Date().toISOString()
-        }]);
-      }
+      setMessages(prev => [...prev, {
+        text: 'Sorry, I encountered an error. Please try again with a different culinary question.',
+        sender: 'bot',
+        timestamp: new Date().toISOString()
+      }]);
     } finally {
-      if (lockedChatId === currentChatId) {
-        setIsTyping(false);
-      }
+      setIsTyping(false);
     }
   };
 
