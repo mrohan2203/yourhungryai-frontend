@@ -311,12 +311,12 @@ const ChatbotPage = () => {
         createdAt: new Date().toISOString()
       };
   
-      setChatLogs(prev => prev.map(chat => chat.id === currentChatId ? updatedChat : chat));
+      setChatLogs(prev => prev.map(chat => chat.id === lockedChatId ? updatedChat : chat));
   
       const email = localStorage.getItem('email');
       if (email) {
         await axios.post(`${process.env.REACT_APP_API_URL}/chatlogs/${email}`, {
-          chatLogs: chatLogs.map(chat => chat.id === currentChatId ? updatedChat : chat)
+          chatLogs: chatLogs.map(chat => chat.id === lockedChatId ? updatedChat : chat)
         });
       }
     } catch (error) {
