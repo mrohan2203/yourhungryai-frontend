@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SignupPage.css';
 import errorIcon from './error-icon.svg';
+import yourhungrylogo from "./yourhungry-logo.png";
 
 
 const SignupPage = () => {
@@ -50,6 +51,7 @@ const SignupPage = () => {
     <div className="signup-container">
       {error && <div className="error">
         <img src = {errorIcon} alt = "Error" className='message-icon' />{error}</div>}
+        <img src={yourhungrylogo} alt="YourHungry Logo" className="signup-logo" />
       <p><b>YourAI says Hello!</b></p>
       <input
         type="email"

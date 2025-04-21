@@ -3,6 +3,7 @@ import './ResetPasswordPage.css';
 import { useNavigate } from 'react-router-dom';
 import successIcon from './success-icon.svg';
 import errorIcon from './error-icon.svg';
+import yourhungrylogo from "./yourhungry-logo.png";
 
 const RequestOtpPage = () => {
   const [email, setEmail] = useState('');
@@ -44,6 +45,7 @@ const RequestOtpPage = () => {
       {error && <div className="error">
         <img src={errorIcon} alt="Error" className="message-icon" /> {error}
       </div>}
+      <img src={yourhungrylogo} alt="YourHungry Logo" className="request-logo" />
       <p><b>Stressed? Not needed</b></p>
       <p className="subtext">Forgot your password? No worries! We’re here to help</p>
       <input
