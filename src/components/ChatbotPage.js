@@ -203,23 +203,47 @@ const ChatbotPage = () => {
       );
     });
   };
-  
+
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
-    const lockedChatId = currentChatId; // Lock the chat ID at the time message is sent
-  
+    // If there's no chat ID yet, create one
+    if (!currentChatId) {
+      const newChatId = uuidv4();
+      setCurrentChatId(newChatId);
+
+      const welcomeMessage = {
+        text: "Hello! I'm your culinary assistant John. Ask me about any world cuisine, recipes, or cooking techniques!",
+        sender: 'bot',
+        isNewChat: true,
+        timestamp: new Date().toISOString()
+      };
+
+      const newChat = {
+        id: newChatId,
+        title: 'New Chat',
+        messages: [welcomeMessage],
+        createdAt: new Date().toISOString()
+      };
+
+      setChatLogs(prev => [newChat, ...prev]);
+      setMessages([welcomeMessage]);
+      return; // Let the user send the message again after chat is ready
+    }
+
+    const lockedChatId = currentChatId; // Lock current chat ID
+
     const userMessage = {
       text: message,
       sender: 'user',
       timestamp: new Date().toISOString()
     };
-  
+
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setMessage('');
     setIsTyping(true);
-  
+
     // Track GA4 event
     if (typeof window.gtag === 'function') {
       window.gtag('event', 'send_chat_message', {
@@ -227,46 +251,46 @@ const ChatbotPage = () => {
         event_label: message,
       });
     }
-  
+
     const isFirstMessage = newMessages.filter(msg => msg.sender === 'user').length === 1;
-  
+
     try {
       const systemPrompt = {
         role: "system",
         content: "You are a knowledgeable culinary expert specializing in all world cuisines, cooking techniques, and food science. Use context from the conversation to answer follow-up questions accurately."
       };
-  
+
       const contextMessages = newMessages.slice(-6).map(msg => ({
         role: msg.sender === 'user' ? 'user' : 'assistant',
         content: msg.text
       }));
-  
+
       const textResponse = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [systemPrompt, ...contextMessages],
         temperature: 0.7,
         max_tokens: 1000
       });
-  
+
       let recipeText = textResponse.choices[0]?.message?.content ||
         "Sorry, I couldn't generate a response. Please try again with a culinary question.";
-  
+
       let imageData = null;
       let nearbyRestaurants = '';
-  
+
       if (!recipeText.includes("I specialize only in food-related topics")) {
         const dishName = extractDishName(recipeText);
         recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
-  
+
         if (isFirstMessage) {
           imageData = await generateRecipeImage(dishName);
-  
+
           try {
             const { lat, lng } = await getUserLocation();
             const res = await axios.get(`${process.env.REACT_APP_API_URL}/restaurants/nearby`, {
               params: { dish: dishName, lat, lng }
             });
-  
+
             const list = res.data?.restaurants || [];
             nearbyRestaurants = list.length
               ? `\n\n**Nearby Restaurants:**\n${list.slice(0, 5).map((r, i) => `${i + 1}. [${r.name}](${r.url}) - ${r.address}`).join('\n')}`
@@ -277,9 +301,9 @@ const ChatbotPage = () => {
           }
         }
       }
-  
+
       recipeText += nearbyRestaurants;
-  
+
       const botMessage = {
         text: recipeText,
         sender: 'bot',
@@ -287,10 +311,10 @@ const ChatbotPage = () => {
         markdown: true,
         image: imageData
       };
-  
+
       const updatedMessages = [...newMessages, botMessage];
       setMessages(updatedMessages);
-  
+
       typeWriterEffect(recipeText, (displayedText) => {
         setMessages(prev => {
           const newMessages = [...prev];
@@ -303,16 +327,16 @@ const ChatbotPage = () => {
           return newMessages;
         });
       });
-  
+
       const updatedChat = {
         id: lockedChatId,
         title: message.slice(0, 30) + (message.length > 30 ? '...' : '') || 'New Chat',
         messages: updatedMessages,
         createdAt: new Date().toISOString()
       };
-  
+
       setChatLogs(prev => prev.map(chat => chat.id === lockedChatId ? updatedChat : chat));
-  
+
       const email = localStorage.getItem('email');
       if (email) {
         await axios.post(`${process.env.REACT_APP_API_URL}/chatlogs/${email}`, {
