@@ -229,29 +229,19 @@ const ChatbotPage = () => {
     const isFirstMessage = newMessages.filter(msg => msg.sender === 'user').length === 1;
   
     try {
-      const culinaryPrompt = `
-        You are a world-class culinary assistant. Provide detailed response with:
-        1. Dish name as heading (## Dish Name)
-        2. Ingredients list (bullet points)
-        3. Preparation method (numbered steps)
-        4. Cooking time and difficulty
-        Format in Markdown.
+      const systemPrompt = {
+        role: "system",
+        content: "You are a knowledgeable culinary expert specializing in all world cuisines, cooking techniques, and food science. Use context from the conversation to answer follow-up questions accurately."
+      };
   
-        Query: "${message}"
-      `;
+      const contextMessages = newMessages.slice(-6).map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'assistant',
+        content: msg.text
+      }));
   
       const textResponse = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content: "You are a knowledgeable culinary expert specializing in all world cuisines, cooking techniques, and food science."
-          },
-          {
-            role: "user",
-            content: culinaryPrompt
-          }
-        ],
+        messages: [systemPrompt, ...contextMessages],
         temperature: 0.7,
         max_tokens: 1000
       });
@@ -277,7 +267,7 @@ const ChatbotPage = () => {
   
             const list = res.data?.restaurants || [];
             nearbyRestaurants = list.length
-              ? `\n\n**Nearby Restaurants:**\n${list.map((r, i) => `${i + 1}. [${r.name}](${r.url}) - ${r.address}`).slice(0, 5).join('\n')}`
+              ? `\n\n**Nearby Restaurants:**\n${list.slice(0, 5).map((r, i) => `${i + 1}. [${r.name}](${r.url}) - ${r.address}`).join('\n')}`
               : `\n\n*No nearby restaurants found for "${dishName}".*`;
           } catch (err) {
             console.warn("Restaurant fetch failed:", err);
