@@ -216,6 +216,14 @@ const ChatbotPage = () => {
     setMessages(newMessages);
     setMessage('');
     setIsTyping(true);
+
+    // Track GA4 event
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'send_chat_message', {
+        event_category: 'Chatbot',
+        event_label: message,
+      });
+    }
   
     try {
       const culinaryPrompt = `
