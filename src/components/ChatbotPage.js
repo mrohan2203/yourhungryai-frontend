@@ -345,7 +345,7 @@ const ChatbotPage = () => {
         {!isSidebarCollapsed && (
           <>
             <div className="new-chat-section">
-              <button className="new-chat-button" onClick={handleNewChat}>
+              <button className="new-chat-button" onClick={handleNewChat} disabled={isTyping}>
                 <img src={plusIcon} alt="New Chat" className="plus-icon" />
                 New Chat
               </button>

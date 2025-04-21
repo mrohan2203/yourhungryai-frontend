@@ -192,6 +192,12 @@
   background-color: #2a2b32;
 }
 
+.new-chat-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 /* Chat Log Section */
 .new-chat-section {
   padding: 0.5rem;
