@@ -163,7 +163,7 @@ const ChatbotPage = () => {
     try {
       setIsGeneratingImage(true);
       const response = await axios.get(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(dishName)}&client_id=${REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(dishName)}&client_id=${UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
       );
       if (response.data.results.length > 0) {
         return {
