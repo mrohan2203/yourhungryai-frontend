@@ -261,7 +261,8 @@ const ChatbotPage = () => {
         const dishName = extractDishName(recipeText);
   
         if (isFirstMessage) {
-          const imagePrompt = `a high-resolution image of the dish "${dishName}" served on a plate, with good lighting, styled professionally like food magazine photography`;
+          // 👇 Enhanced culinary image prompt
+          const imagePrompt = `a professional food photograph of "${dishName}" — beautifully plated, vibrant lighting, rustic background, shallow depth of field, food magazine style`;
           imageData = await generateRecipeImage(imagePrompt);
   
           try {
