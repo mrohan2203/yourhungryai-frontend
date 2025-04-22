@@ -221,9 +221,9 @@ const ChatbotPage = () => {
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setMessage('');
-    setIsTyping(true); // disables "New Chat" during generation and typing
+    setIsTyping(true); // disables "New Chat" during generation & typing
   
-    // GA4 Tracking
+    // Track GA4 event
     if (typeof window.gtag === 'function') {
       window.gtag('event', 'send_chat_message', {
         event_category: 'Chatbot',
@@ -252,16 +252,17 @@ const ChatbotPage = () => {
       });
   
       let recipeText = textResponse.choices[0]?.message?.content || "Sorry, I couldn't generate a response. Please try again with a culinary question.";
+      recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
   
       let imageData = null;
       let nearbyRestaurants = '';
   
       if (!recipeText.includes("I specialize only in food-related topics")) {
         const dishName = extractDishName(recipeText);
-        recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
   
         if (isFirstMessage) {
-          imageData = await generateRecipeImage(dishName);
+          const imagePrompt = `a high-resolution image of the dish "${dishName}" served on a plate, with good lighting, styled professionally like food magazine photography`;
+          imageData = await generateRecipeImage(imagePrompt);
   
           try {
             const { lat, lng } = await getUserLocation();
@@ -308,7 +309,7 @@ const ChatbotPage = () => {
           });
         },
         () => {
-          setIsTyping(false); // ✅ Only re-enable "New Chat" after typing completes
+          setIsTyping(false); // ✅ Re-enable "New Chat" after typing completes
         }
       );
   
@@ -327,7 +328,6 @@ const ChatbotPage = () => {
           chatLogs: chatLogs.map(chat => chat.id === lockedChatId ? updatedChat : chat)
         });
       }
-  
     } catch (error) {
       console.error('Error:', error);
       setMessages(prev => [...prev, {
@@ -335,10 +335,10 @@ const ChatbotPage = () => {
         sender: 'bot',
         timestamp: new Date().toISOString()
       }]);
-      setIsTyping(false); // restore button only on error
+      setIsTyping(false);
     }
   };
-
+  
   const redirectToDiscord = () => {
     window.open('https://discord.gg/ZkCwK9jp', '_blank');
   };
