@@ -269,7 +269,8 @@ const ChatbotPage = () => {
         recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
   
         if (isFirstMessage) {
-          imageData = await generateRecipeImage(dishName);
+          const imagePrompt = `professional food photography of ${dishName} plated and styled on a table, high-resolution, natural lighting, gourmet presentation`;
+          imageData = await generateRecipeImage(imagePrompt);
   
           try {
             const { lat, lng } = await getUserLocation();
