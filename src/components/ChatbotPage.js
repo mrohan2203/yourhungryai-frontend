@@ -160,24 +160,21 @@ const ChatbotPage = () => {
   const generateRecipeImage = async (dishName) => {
     try {
       setIsGeneratingImage(true);
-  
       const response = await axios.get(
-        `https://api.pexels.com/v1/search?query=${encodeURIComponent(dishName)}&per_page=1`,
+        `https://api.pexels.com/v1/search?query=${encodeURIComponent(dishName + ' food')}&per_page=1&orientation=landscape`,
         {
           headers: {
-            Authorization: process.env.REACT_APP_PEXELS_API_KEY,
+            Authorization: process.env.REACT_APP_PEXELS_API_KEY
           }
         }
       );
-  
-      const photos = response.data.photos;
-      if (photos.length > 0) {
+      const photo = response.data.photos?.[0];
+      if (photo) {
         return {
-          url: photos[0].src.large,
+          url: photo.src?.landscape || photo.src?.medium,
           alt: dishName
         };
       }
-  
       return null;
     } catch (error) {
       console.error("Error fetching image from Pexels:", error);
