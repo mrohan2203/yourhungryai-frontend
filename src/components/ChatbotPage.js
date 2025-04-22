@@ -208,6 +208,11 @@ const ChatbotPage = () => {
     });
   };
 
+  const handleStopGeneration = () => {
+    setIsTyping(false);
+    setIsGenerating(false);
+  };
+
   const handleSendMessage = async () => {
     if (!message.trim()) return;
   
@@ -454,7 +459,7 @@ const ChatbotPage = () => {
               alt={isGenerating ? 'Stop' : 'Send'} 
               className="send-icon"
             />
-            
+
           </button>
         </div>
       </div>
