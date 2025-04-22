@@ -146,19 +146,23 @@ const ChatbotPage = () => {
     }
   };
 
-  const typeWriterEffect = (text, callback, onComplete) => {
+  let typingTimeout; // declare at module/component level
+
+  const typeWriterEffect = (text, onUpdate, onComplete) => {
     let i = 0;
     const speed = 20;
-    const typing = () => {
+  
+    const type = () => {
       if (i < text.length) {
-        callback(text.substring(0, i + 1));
+        onUpdate(text.substring(0, i + 1));
         i++;
-        setTimeout(typing, speed);
+        typingTimeout = setTimeout(type, speed);
       } else {
-        onComplete?.();
+        onComplete();
       }
     };
-    typing();
+  
+    type();
   };
 
   const generateRecipeImage = async (dishName) => {
@@ -209,6 +213,7 @@ const ChatbotPage = () => {
   };
 
   const handleStopGeneration = () => {
+    clearTimeout(typingTimeout); // Stop the typewriter loop
     setIsTyping(false);
     setIsGenerating(false);
   };
@@ -453,7 +458,7 @@ const ChatbotPage = () => {
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
           />
-          <button className="send-button" disabled={!message.trim() || isTyping} onClick={isGenerating ? handleStopGeneration : handleSendMessage}>
+          <button className="send-button" disabled={!message.trim() && !isGenerating} onClick={isGenerating ? handleStopGeneration : handleSendMessage}>
             <img 
               src={isGenerating ? stopIcon : sendIcon} 
               alt={isGenerating ? 'Stop' : 'Send'} 
