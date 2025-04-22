@@ -352,7 +352,16 @@ const ChatbotPage = () => {
         {!isSidebarCollapsed && (
           <>
             <div className="new-chat-section">
-              <button className="new-chat-button" onClick={handleNewChat}>
+              <button 
+                className="new-chat-button" 
+                onClick={handleNewChat} 
+                disabled={isTyping} 
+                style={{
+                  opacity: isTyping ? 0.5 : 1, 
+                  pointerEvents: isTyping ? 'none' : 'auto',
+                  cursor: isTyping ? 'not-allowed' : 'pointer'
+                }}
+              >
                 <img src={plusIcon} alt="New Chat" className="plus-icon" />
                 New Chat
               </button>
