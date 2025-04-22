@@ -144,7 +144,7 @@ const ChatbotPage = () => {
     }
   };
 
-  const typeWriterEffect = (text, callback) => {
+  const typeWriterEffect = (text, callback, onComplete) => {
     let i = 0;
     const speed = 20;
     const typing = () => {
@@ -152,6 +152,8 @@ const ChatbotPage = () => {
         callback(text.substring(0, i + 1));
         i++;
         setTimeout(typing, speed);
+      } else {
+        onComplete?.();
       }
     };
     typing();
@@ -207,7 +209,7 @@ const ChatbotPage = () => {
   const handleSendMessage = async () => {
     if (!message.trim()) return;
   
-    const lockedChatId = currentChatId; // Lock the chat ID at the time message is sent
+    const lockedChatId = currentChatId;
     const timestamp = new Date().toISOString();
   
     const userMessage = {
@@ -219,9 +221,9 @@ const ChatbotPage = () => {
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setMessage('');
-    setIsTyping(true);
+    setIsTyping(true); // disables "New Chat" during generation and typing
   
-    // Track GA4 event
+    // GA4 Tracking
     if (typeof window.gtag === 'function') {
       window.gtag('event', 'send_chat_message', {
         event_category: 'Chatbot',
@@ -291,18 +293,24 @@ const ChatbotPage = () => {
       const finalMessages = [...newMessages, botMessage];
       setMessages(finalMessages);
   
-      typeWriterEffect(recipeText, (displayedText) => {
-        setMessages(prev => {
-          const newMessages = [...prev];
-          if (newMessages.length > 0) {
-            newMessages[newMessages.length - 1] = {
-              ...newMessages[newMessages.length - 1],
-              text: displayedText
-            };
-          }
-          return newMessages;
-        });
-      });
+      typeWriterEffect(
+        recipeText,
+        (displayedText) => {
+          setMessages(prev => {
+            const newMessages = [...prev];
+            if (newMessages.length > 0) {
+              newMessages[newMessages.length - 1] = {
+                ...newMessages[newMessages.length - 1],
+                text: displayedText
+              };
+            }
+            return newMessages;
+          });
+        },
+        () => {
+          setIsTyping(false); // ✅ Only re-enable "New Chat" after typing completes
+        }
+      );
   
       const updatedChat = {
         id: lockedChatId,
@@ -327,8 +335,7 @@ const ChatbotPage = () => {
         sender: 'bot',
         timestamp: new Date().toISOString()
       }]);
-    } finally {
-      setIsTyping(false);
+      setIsTyping(false); // restore button only on error
     }
   };
 
