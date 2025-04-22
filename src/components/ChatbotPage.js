@@ -10,6 +10,7 @@ import darkIcon from './dark-icon.svg';
 import discordIcon from './discord-icon.svg';
 import logoutIcon from './logout-icon.svg';
 import sendIcon from './send.svg';
+import stopIcon from './stop.svg';
 import plusIcon from './plus.svg';
 import profileIcon from './profile-icon.svg';
 import arrowIcon from './arrow.svg';
@@ -36,6 +37,7 @@ const ChatbotPage = () => {
   const [currentChatId, setCurrentChatId] = useState(null);
   const [editingChatId, setEditingChatId] = useState(null);
   const [editTitle, setEditTitle] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
@@ -221,9 +223,10 @@ const ChatbotPage = () => {
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setMessage('');
-    setIsTyping(true); // disables "New Chat" during generation & typing
+    setIsTyping(true);
+    setIsGenerating(true); // Disable "New Chat" and switch Send to Stop
   
-    // Track GA4 event
+    // GA4 Tracking
     if (typeof window.gtag === 'function') {
       window.gtag('event', 'send_chat_message', {
         event_category: 'Chatbot',
@@ -261,8 +264,7 @@ const ChatbotPage = () => {
         const dishName = extractDishName(recipeText);
   
         if (isFirstMessage) {
-          // 👇 Enhanced culinary image prompt
-          const imagePrompt = `a professional food photograph of "${dishName}" — beautifully plated, vibrant lighting, rustic background, shallow depth of field, food magazine style`;
+          const imagePrompt = `a well-plated high-resolution image of "${dishName}", styled like a gourmet food magazine photo`;
           imageData = await generateRecipeImage(imagePrompt);
   
           try {
@@ -310,7 +312,8 @@ const ChatbotPage = () => {
           });
         },
         () => {
-          setIsTyping(false); // ✅ Re-enable "New Chat" after typing completes
+          setIsTyping(false);     // Enable send + "New Chat"
+          setIsGenerating(false); // Revert stop icon back to send
         }
       );
   
@@ -337,6 +340,7 @@ const ChatbotPage = () => {
         timestamp: new Date().toISOString()
       }]);
       setIsTyping(false);
+      setIsGenerating(false);
     }
   };
   
@@ -444,8 +448,12 @@ const ChatbotPage = () => {
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
           />
-          <button className="send-button" disabled={!message.trim() || isTyping} onClick={handleSendMessage}>
-            <img src={sendIcon} alt="Send" className="send-icon" />
+          <button className="send-button" disabled={!message.trim() || isTyping} onClick={isGenerating ? handleStopGeneration : handleSendMessage}>
+            <img 
+              src={isGenerating ? stopIcon : sendIcon} 
+              alt={isGenerating ? 'Stop' : 'Send'} 
+              className="send-icon"
+            />
           </button>
         </div>
       </div>
