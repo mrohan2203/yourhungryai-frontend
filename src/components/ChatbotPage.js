@@ -10,7 +10,6 @@ import darkIcon from './dark-icon.svg';
 import discordIcon from './discord-icon.svg';
 import logoutIcon from './logout-icon.svg';
 import sendIcon from './send.svg';
-import stopIcon from './stop.svg';
 import plusIcon from './plus.svg';
 import profileIcon from './profile-icon.svg';
 import arrowIcon from './arrow.svg';
@@ -37,7 +36,6 @@ const ChatbotPage = () => {
   const [currentChatId, setCurrentChatId] = useState(null);
   const [editingChatId, setEditingChatId] = useState(null);
   const [editTitle, setEditTitle] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
@@ -146,21 +144,17 @@ const ChatbotPage = () => {
     }
   };
 
-  const typeWriterEffect = (text, onUpdate, onComplete) => {
+  const typeWriterEffect = (text, callback) => {
     let i = 0;
     const speed = 20;
-  
-    const type = () => {
+    const typing = () => {
       if (i < text.length) {
-        onUpdate(text.substring(0, i + 1));
+        callback(text.substring(0, i + 1));
         i++;
-        typingTimeout = setTimeout(type, speed);
-      } else {
-        onComplete();
+        setTimeout(typing, speed);
       }
     };
-  
-    type();
+    typing();
   };
 
   const generateRecipeImage = async (dishName) => {
@@ -209,37 +203,22 @@ const ChatbotPage = () => {
       );
     });
   };
-
-  const handleStopGeneration = () => {
-    if (abortController) {
-      abortController.abort(); // Stop OpenAI request
-    }
-    clearTimeout(typingTimeout); // Stop typing
-    setIsTyping(false);
-    setIsGenerating(false);
-  };
-
-  let abortController = null;
-  let typingTimeout = null;
-
+  
   const handleSendMessage = async () => {
     if (!message.trim()) return;
-  
-    const lockedChatId = currentChatId;
-    const timestamp = new Date().toISOString();
   
     const userMessage = {
       text: message,
       sender: 'user',
-      timestamp
+      timestamp: new Date().toISOString()
     };
   
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setMessage('');
     setIsTyping(true);
-    setIsGenerating(true);
   
+    // Track GA4 event
     if (typeof window.gtag === 'function') {
       window.gtag('event', 'send_chat_message', {
         event_category: 'Chatbot',
@@ -260,29 +239,25 @@ const ChatbotPage = () => {
         content: msg.text
       }));
   
-      // 🔁 Set AbortController
-      abortController = new AbortController();
-  
       const textResponse = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [systemPrompt, ...contextMessages],
         temperature: 0.7,
-        max_tokens: 1000,
-        signal: abortController.signal
+        max_tokens: 1000
       });
   
-      let recipeText = textResponse.choices[0]?.message?.content || "Sorry, I couldn't generate a response.";
-      recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
+      let recipeText = textResponse.choices[0]?.message?.content ||
+        "Sorry, I couldn't generate a response. Please try again with a culinary question.";
   
       let imageData = null;
       let nearbyRestaurants = '';
   
       if (!recipeText.includes("I specialize only in food-related topics")) {
         const dishName = extractDishName(recipeText);
+        recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
   
         if (isFirstMessage) {
-          const imagePrompt = `a high-resolution image of the dish "${dishName}" served on a plate, with good lighting, styled professionally like food magazine photography`;
-          imageData = await generateRecipeImage(imagePrompt);
+          imageData = await generateRecipeImage(dishName);
   
           try {
             const { lat, lng } = await getUserLocation();
@@ -311,59 +286,49 @@ const ChatbotPage = () => {
         image: imageData
       };
   
-      const finalMessages = [...newMessages, botMessage];
-      setMessages(finalMessages);
+      const updatedMessages = [...newMessages, botMessage];
+      setMessages(updatedMessages);
   
-      typeWriterEffect(
-        recipeText,
-        (displayedText) => {
-          setMessages(prev => {
-            const newMessages = [...prev];
+      typeWriterEffect(recipeText, (displayedText) => {
+        setMessages(prev => {
+          const newMessages = [...prev];
+          if (newMessages.length > 0) {
             newMessages[newMessages.length - 1] = {
               ...newMessages[newMessages.length - 1],
               text: displayedText
             };
-            return newMessages;
-          });
-        },
-        () => {
-          setIsTyping(false);
-          setIsGenerating(false);
-        }
-      );
+          }
+          return newMessages;
+        });
+      });
   
       const updatedChat = {
-        id: lockedChatId,
+        id: currentChatId,
         title: message.slice(0, 30) + (message.length > 30 ? '...' : '') || 'New Chat',
-        messages: finalMessages,
-        createdAt: timestamp
+        messages: updatedMessages,
+        createdAt: new Date().toISOString()
       };
   
-      setChatLogs(prev => prev.map(chat => chat.id === lockedChatId ? updatedChat : chat));
+      setChatLogs(prev => prev.map(chat => chat.id === currentChatId ? updatedChat : chat));
   
       const email = localStorage.getItem('email');
       if (email) {
         await axios.post(`${process.env.REACT_APP_API_URL}/chatlogs/${email}`, {
-          chatLogs: chatLogs.map(chat => chat.id === lockedChatId ? updatedChat : chat)
+          chatLogs: chatLogs.map(chat => chat.id === currentChatId ? updatedChat : chat)
         });
       }
-  
     } catch (error) {
-      if (error.name === 'AbortError') {
-        console.log('Generation aborted by user.');
-      } else {
-        console.error('Error:', error);
-        setMessages(prev => [...prev, {
-          text: 'Sorry, I encountered an error. Please try again with a different culinary question.',
-          sender: 'bot',
-          timestamp: new Date().toISOString()
-        }]);
-      }
+      console.error('Error:', error);
+      setMessages(prev => [...prev, {
+        text: 'Sorry, I encountered an error. Please try again with a different culinary question.',
+        sender: 'bot',
+        timestamp: new Date().toISOString()
+      }]);
+    } finally {
       setIsTyping(false);
-      setIsGenerating(false);
     }
   };
-  
+
   const redirectToDiscord = () => {
     window.open('https://discord.gg/ZkCwK9jp', '_blank');
   };
@@ -377,7 +342,7 @@ const ChatbotPage = () => {
         {!isSidebarCollapsed && (
           <>
             <div className="new-chat-section">
-              <button className="new-chat-button" onClick={handleNewChat} disabled={isTyping}>
+              <button className="new-chat-button" onClick={handleNewChat}>
                 <img src={plusIcon} alt="New Chat" className="plus-icon" />
                 New Chat
               </button>
@@ -468,13 +433,8 @@ const ChatbotPage = () => {
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
           />
-          <button className="send-button" disabled={!message.trim() && !isGenerating} onClick={isGenerating ? handleStopGeneration : handleSendMessage}>
-            <img 
-              src={isGenerating ? stopIcon : sendIcon} 
-              alt={isGenerating ? 'Stop' : 'Send'} 
-              className="send-icon"
-            />
-
+          <button className="send-button" disabled={!message.trim() || isTyping} onClick={handleSendMessage}>
+            <img src={sendIcon} alt="Send" className="send-icon" />
           </button>
         </div>
       </div>
