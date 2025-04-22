@@ -171,7 +171,7 @@ const ChatbotPage = () => {
       const photo = response.data.photos?.[0];
       if (photo) {
         return {
-          url: photo.src?.landscape || photo.src?.medium,
+          url: photo.src?.medium || photo.src?.original,
           alt: dishName
         };
       }
