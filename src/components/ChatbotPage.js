@@ -146,8 +146,6 @@ const ChatbotPage = () => {
     }
   };
 
-  let typingTimeout; // declare at module/component level
-
   const typeWriterEffect = (text, onUpdate, onComplete) => {
     let i = 0;
     const speed = 20;
@@ -222,6 +220,7 @@ const ChatbotPage = () => {
   };
 
   let abortController = null;
+  let typingTimeout = null;
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
