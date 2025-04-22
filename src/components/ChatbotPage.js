@@ -213,10 +213,15 @@ const ChatbotPage = () => {
   };
 
   const handleStopGeneration = () => {
-    clearTimeout(typingTimeout); // Stop the typewriter loop
+    if (abortController) {
+      abortController.abort(); // Stop OpenAI request
+    }
+    clearTimeout(typingTimeout); // Stop typing
     setIsTyping(false);
     setIsGenerating(false);
   };
+
+  let abortController = null;
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
@@ -234,9 +239,8 @@ const ChatbotPage = () => {
     setMessages(newMessages);
     setMessage('');
     setIsTyping(true);
-    setIsGenerating(true); // Disable "New Chat" and switch Send to Stop
+    setIsGenerating(true);
   
-    // GA4 Tracking
     if (typeof window.gtag === 'function') {
       window.gtag('event', 'send_chat_message', {
         event_category: 'Chatbot',
@@ -257,14 +261,18 @@ const ChatbotPage = () => {
         content: msg.text
       }));
   
+      // 🔁 Set AbortController
+      abortController = new AbortController();
+  
       const textResponse = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [systemPrompt, ...contextMessages],
         temperature: 0.7,
-        max_tokens: 1000
+        max_tokens: 1000,
+        signal: abortController.signal
       });
   
-      let recipeText = textResponse.choices[0]?.message?.content || "Sorry, I couldn't generate a response. Please try again with a culinary question.";
+      let recipeText = textResponse.choices[0]?.message?.content || "Sorry, I couldn't generate a response.";
       recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
   
       let imageData = null;
@@ -274,7 +282,7 @@ const ChatbotPage = () => {
         const dishName = extractDishName(recipeText);
   
         if (isFirstMessage) {
-          const imagePrompt = `a well-plated high-resolution image of "${dishName}", styled like a gourmet food magazine photo`;
+          const imagePrompt = `a high-resolution image of the dish "${dishName}" served on a plate, with good lighting, styled professionally like food magazine photography`;
           imageData = await generateRecipeImage(imagePrompt);
   
           try {
@@ -312,18 +320,16 @@ const ChatbotPage = () => {
         (displayedText) => {
           setMessages(prev => {
             const newMessages = [...prev];
-            if (newMessages.length > 0) {
-              newMessages[newMessages.length - 1] = {
-                ...newMessages[newMessages.length - 1],
-                text: displayedText
-              };
-            }
+            newMessages[newMessages.length - 1] = {
+              ...newMessages[newMessages.length - 1],
+              text: displayedText
+            };
             return newMessages;
           });
         },
         () => {
-          setIsTyping(false);     // Enable send + "New Chat"
-          setIsGenerating(false); // Revert stop icon back to send
+          setIsTyping(false);
+          setIsGenerating(false);
         }
       );
   
@@ -342,13 +348,18 @@ const ChatbotPage = () => {
           chatLogs: chatLogs.map(chat => chat.id === lockedChatId ? updatedChat : chat)
         });
       }
+  
     } catch (error) {
-      console.error('Error:', error);
-      setMessages(prev => [...prev, {
-        text: 'Sorry, I encountered an error. Please try again with a different culinary question.',
-        sender: 'bot',
-        timestamp: new Date().toISOString()
-      }]);
+      if (error.name === 'AbortError') {
+        console.log('Generation aborted by user.');
+      } else {
+        console.error('Error:', error);
+        setMessages(prev => [...prev, {
+          text: 'Sorry, I encountered an error. Please try again with a different culinary question.',
+          sender: 'bot',
+          timestamp: new Date().toISOString()
+        }]);
+      }
       setIsTyping(false);
       setIsGenerating(false);
     }
