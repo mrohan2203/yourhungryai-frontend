@@ -454,6 +454,7 @@ const ChatbotPage = () => {
               alt={isGenerating ? 'Stop' : 'Send'} 
               className="send-icon"
             />
+            
           </button>
         </div>
       </div>
