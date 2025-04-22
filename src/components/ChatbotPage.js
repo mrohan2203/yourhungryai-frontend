@@ -160,6 +160,8 @@ const ChatbotPage = () => {
   const generateRecipeImage = async (dishName) => {
     try {
       setIsGeneratingImage(true);
+      console.log(`[ImageGen] Searching for: ${dishName}`); // ✅ Debug line
+  
       const response = await axios.get(
         `https://api.pexels.com/v1/search?query=${encodeURIComponent(dishName + ' food')}&per_page=1&orientation=landscape`,
         {
@@ -168,16 +170,22 @@ const ChatbotPage = () => {
           }
         }
       );
+  
       const photo = response.data.photos?.[0];
+  
       if (photo) {
+        console.log('[ImageGen] Image found:', photo.url); // ✅ Success log
         return {
           url: photo.src?.medium || photo.src?.original,
           alt: dishName
         };
+      } else {
+        console.warn('[ImageGen] No images returned for:', dishName); // ⚠️ No results
+        return null;
       }
-      return null;
+  
     } catch (error) {
-      console.error("Error fetching image from Pexels:", error);
+      console.error('[ImageGen] Error fetching from Pexels:', error); // ❌ API error
       return null;
     } finally {
       setIsGeneratingImage(false);
