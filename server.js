@@ -340,7 +340,7 @@ app.get('/proxy/image', async (req, res) => {
         orientation: 'landscape'
       },
       headers: {
-        Authorization: process.env.REACT_APP_PEXELS_API_KEY
+        Authorization: process.env.PEXELS_API_KEY
       }
     });
 
