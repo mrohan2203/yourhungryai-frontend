@@ -144,7 +144,7 @@ const ChatbotPage = () => {
     }
   };
 
-  const typeWriterEffect = (text, callback) => {
+  const typeWriterEffect = (text, callback, onComplete) => {
     let i = 0;
     const speed = 20;
     const typing = () => {
@@ -152,6 +152,8 @@ const ChatbotPage = () => {
         callback(text.substring(0, i + 1));
         i++;
         setTimeout(typing, speed);
+      } else {
+        onComplete?.();
       }
     };
     typing();
@@ -160,8 +162,9 @@ const ChatbotPage = () => {
   const generateRecipeImage = async (dishName) => {
     try {
       setIsGeneratingImage(true);
+      const descriptivePrompt = `a professional photo of ${dishName}, well-plated, high resolution, food magazine style`;
       const response = await axios.get(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(dishName)}&client_id=${UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(descriptivePrompt)}&client_id=${UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
       );
       if (response.data.results.length > 0) {
         return {
@@ -178,10 +181,14 @@ const ChatbotPage = () => {
     }
   };
 
-  const extractDishName = (recipeText) => {
-    const headingMatch = recipeText.match(/^##\s+(.+)$/m);
-    if (headingMatch) return headingMatch[1];
-    return message.split(' ').slice(0, 5).join(' ');
+  const extractDishName = (userInput) => {
+    return userInput
+      .replace(/how to make|recipe for|prepare|cook|make|please|give me|suggest/i, '')
+      .trim()
+      .split(' ')
+      .slice(0, 5)
+      .join(' ')
+      .trim();
   };
 
   const getUserLocation = () => {
@@ -207,18 +214,21 @@ const ChatbotPage = () => {
   const handleSendMessage = async () => {
     if (!message.trim()) return;
   
+    const lockedChatId = currentChatId;
+    const timestamp = new Date().toISOString();
+  
     const userMessage = {
       text: message,
       sender: 'user',
-      timestamp: new Date().toISOString()
+      timestamp
     };
   
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setMessage('');
-    setIsTyping(true);
+    setIsTyping(true); // disables "New Chat" during generation and typing
   
-    // Track GA4 event
+    // GA4 Tracking
     if (typeof window.gtag === 'function') {
       window.gtag('event', 'send_chat_message', {
         event_category: 'Chatbot',
@@ -246,14 +256,13 @@ const ChatbotPage = () => {
         max_tokens: 1000
       });
   
-      let recipeText = textResponse.choices[0]?.message?.content ||
-        "Sorry, I couldn't generate a response. Please try again with a culinary question.";
+      let recipeText = textResponse.choices[0]?.message?.content || "Sorry, I couldn't generate a response. Please try again with a culinary question.";
   
       let imageData = null;
       let nearbyRestaurants = '';
   
       if (!recipeText.includes("I specialize only in food-related topics")) {
-        const dishName = extractDishName(recipeText);
+        const dishName = extractDishName(message);
         recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
   
         if (isFirstMessage) {
@@ -286,37 +295,44 @@ const ChatbotPage = () => {
         image: imageData
       };
   
-      const updatedMessages = [...newMessages, botMessage];
-      setMessages(updatedMessages);
+      const finalMessages = [...newMessages, botMessage];
+      setMessages(finalMessages);
   
-      typeWriterEffect(recipeText, (displayedText) => {
-        setMessages(prev => {
-          const newMessages = [...prev];
-          if (newMessages.length > 0) {
-            newMessages[newMessages.length - 1] = {
-              ...newMessages[newMessages.length - 1],
-              text: displayedText
-            };
-          }
-          return newMessages;
-        });
-      });
+      typeWriterEffect(
+        recipeText,
+        (displayedText) => {
+          setMessages(prev => {
+            const newMessages = [...prev];
+            if (newMessages.length > 0) {
+              newMessages[newMessages.length - 1] = {
+                ...newMessages[newMessages.length - 1],
+                text: displayedText
+              };
+            }
+            return newMessages;
+          });
+        },
+        () => {
+          setIsTyping(false); // ✅ Only re-enable "New Chat" after typing completes
+        }
+      );
   
       const updatedChat = {
-        id: currentChatId,
+        id: lockedChatId,
         title: message.slice(0, 30) + (message.length > 30 ? '...' : '') || 'New Chat',
-        messages: updatedMessages,
-        createdAt: new Date().toISOString()
+        messages: finalMessages,
+        createdAt: timestamp
       };
   
-      setChatLogs(prev => prev.map(chat => chat.id === currentChatId ? updatedChat : chat));
+      setChatLogs(prev => prev.map(chat => chat.id === lockedChatId ? updatedChat : chat));
   
       const email = localStorage.getItem('email');
       if (email) {
         await axios.post(`${process.env.REACT_APP_API_URL}/chatlogs/${email}`, {
-          chatLogs: chatLogs.map(chat => chat.id === currentChatId ? updatedChat : chat)
+          chatLogs: chatLogs.map(chat => chat.id === lockedChatId ? updatedChat : chat)
         });
       }
+  
     } catch (error) {
       console.error('Error:', error);
       setMessages(prev => [...prev, {
@@ -324,8 +340,7 @@ const ChatbotPage = () => {
         sender: 'bot',
         timestamp: new Date().toISOString()
       }]);
-    } finally {
-      setIsTyping(false);
+      setIsTyping(false); // restore button only on error
     }
   };
 
@@ -342,7 +357,16 @@ const ChatbotPage = () => {
         {!isSidebarCollapsed && (
           <>
             <div className="new-chat-section">
-              <button className="new-chat-button" onClick={handleNewChat}>
+              <button 
+                className="new-chat-button" 
+                onClick={handleNewChat} 
+                disabled={isTyping} 
+                style={{
+                  opacity: isTyping ? 0.5 : 1, 
+                  pointerEvents: isTyping ? 'none' : 'auto',
+                  cursor: isTyping ? 'not-allowed' : 'pointer'
+                }}
+              >
                 <img src={plusIcon} alt="New Chat" className="plus-icon" />
                 New Chat
               </button>
