@@ -162,13 +162,14 @@ const ChatbotPage = () => {
   const generateRecipeImage = async (dishName) => {
     try {
       setIsGeneratingImage(true);
+      const query = `${dishName} in a bowl food photography`;
       const response = await axios.get(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(dishName)}&client_id=${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&client_id=${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
       );
       if (response.data.results.length > 0) {
         return {
           url: response.data.results[0].urls.regular,
-          alt: dishName
+          alt: `${dishName} in a bowl`
         };
       }
       return null;
