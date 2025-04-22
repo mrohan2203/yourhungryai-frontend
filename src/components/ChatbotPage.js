@@ -162,8 +162,9 @@ const ChatbotPage = () => {
   const generateRecipeImage = async (dishName) => {
     try {
       setIsGeneratingImage(true);
+      const descriptivePrompt = `a professional photo of ${dishName}, well-plated, high resolution, food magazine style`;
       const response = await axios.get(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(dishName)}&client_id=${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(descriptivePrompt)}&client_id=${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
       );
       if (response.data.results.length > 0) {
         return {
@@ -180,10 +181,14 @@ const ChatbotPage = () => {
     }
   };
 
-  const extractDishName = (recipeText) => {
-    const headingMatch = recipeText.match(/^##\s+(.+)$/m);
-    if (headingMatch) return headingMatch[1];
-    return message.split(' ').slice(0, 5).join(' ');
+  const extractDishName = (userInput) => {
+    return userInput
+      .replace(/how to make|recipe for|prepare|cook|make|please|give me|suggest/i, '')
+      .trim()
+      .split(' ')
+      .slice(0, 5)
+      .join(' ')
+      .trim();
   };
 
   const getUserLocation = () => {
@@ -257,7 +262,7 @@ const ChatbotPage = () => {
       let nearbyRestaurants = '';
   
       if (!recipeText.includes("I specialize only in food-related topics")) {
-        const dishName = extractDishName(recipeText);
+        const dishName = extractDishName(message);
         recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
   
         if (isFirstMessage) {
