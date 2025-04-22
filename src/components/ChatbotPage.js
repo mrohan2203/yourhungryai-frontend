@@ -370,7 +370,17 @@ const ChatbotPage = () => {
               </button>
               <div className="chat-log-container">
                 {chatLogs.map(chat => (
-                  <div key={chat.id} className={`chat-log-item ${chat.id === currentChatId ? 'active' : ''}`} onClick={() => loadChat(chat.id)}>
+                  <div
+                  key={chat.id}
+                  className={`chat-log-item ${chat.id === currentChatId ? 'active' : ''} ${isTyping ? 'disabled' : ''}`}
+                  onClick={() => {
+                    if (!isTyping) loadChat(chat.id);
+                  }}
+                  style={{
+                    cursor: isTyping ? 'not-allowed' : 'pointer',
+                    opacity: isTyping ? 0.6 : 1
+                  }}
+                >
                     <img src={chatIcon} alt="Chat" className="chat-log-icon" />
                     {editingChatId === chat.id ? (
                       <input
