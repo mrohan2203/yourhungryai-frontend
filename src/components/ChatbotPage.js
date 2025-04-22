@@ -160,38 +160,29 @@ const ChatbotPage = () => {
   const generateRecipeImage = async (dishName) => {
     try {
       setIsGeneratingImage(true);
-      console.log(`[ImageGen] Searching for: ${dishName}`); // ✅ Debug line
-  
-      const response = await axios.get(
-        `https://api.pexels.com/v1/search?query=${encodeURIComponent(dishName + ' food')}&per_page=1&orientation=landscape`,
-        {
-          headers: {
-            Authorization: process.env.REACT_APP_PEXELS_API_KEY
-          }
-        }
-      );
+      console.log(`[ImageGen] Searching for: ${dishName}`);
+      
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/proxy/image`, {
+        params: { query: dishName }
+      });
   
       const photo = response.data.photos?.[0];
-  
       if (photo) {
-        console.log('[ImageGen] Image found:', photo.url); // ✅ Success log
         return {
           url: photo.src?.medium || photo.src?.original,
           alt: dishName
         };
-      } else {
-        console.warn('[ImageGen] No images returned for:', dishName); // ⚠️ No results
-        return null;
       }
   
+      return null;
     } catch (error) {
-      console.error('[ImageGen] Error fetching from Pexels:', error); // ❌ API error
+      console.error("[ImageGen] Error fetching from proxy:", error);
       return null;
     } finally {
       setIsGeneratingImage(false);
     }
   };
-
+  
   const extractDishName = (userInput) => {
     return userInput
       .replace(/how to make|recipe for|prepare|cook|make|please|give me|suggest/i, '')
