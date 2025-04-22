@@ -182,15 +182,11 @@ const ChatbotPage = () => {
       setIsGeneratingImage(false);
     }
   };
-  
-  const extractDishName = (userInput) => {
-    return userInput
-      .replace(/how to make|recipe for|prepare|cook|make|please|give me|suggest/i, '')
-      .trim()
-      .split(' ')
-      .slice(0, 5)
-      .join(' ')
-      .trim();
+
+  const extractDishName = (recipeText) => {
+    const headingMatch = recipeText.match(/^##\s+(.+)$/m);
+    if (headingMatch) return headingMatch[1];
+    return message.split(' ').slice(0, 5).join(' ');
   };
 
   const getUserLocation = () => {
