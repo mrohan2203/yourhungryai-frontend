@@ -164,7 +164,7 @@ const ChatbotPage = () => {
       setIsGeneratingImage(true);
       const descriptivePrompt = `a professional photo of ${dishName}, well-plated, high resolution, food magazine style`;
       const response = await axios.get(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(descriptivePrompt)}&client_id=${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(descriptivePrompt)}&client_id=${UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
       );
       if (response.data.results.length > 0) {
         return {
