@@ -45,8 +45,6 @@ const ChatbotPage = () => {
     dangerouslyAllowBrowser: true
   });
 
-  const UNSPLASH_ACCESS_KEY = process.env.REACT_APP_UNSPLASH_ACCESS_KEY;
-
   useEffect(() => {
     const fetchChatLogs = async () => {
       const email = localStorage.getItem('email');
@@ -162,19 +160,27 @@ const ChatbotPage = () => {
   const generateRecipeImage = async (dishName) => {
     try {
       setIsGeneratingImage(true);
-      const descriptivePrompt = `a professional photo of ${dishName}, well-plated, high resolution, food magazine style`;
+  
       const response = await axios.get(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(descriptivePrompt)}&client_id=${UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
+        `https://api.pexels.com/v1/search?query=${encodeURIComponent(dishName)}&per_page=1`,
+        {
+          headers: {
+            Authorization: process.env.REACT_APP_PEXELS_API_KEY,
+          }
+        }
       );
-      if (response.data.results.length > 0) {
+  
+      const photos = response.data.photos;
+      if (photos.length > 0) {
         return {
-          url: response.data.results[0].urls.regular,
+          url: photos[0].src.large,
           alt: dishName
         };
       }
+  
       return null;
     } catch (error) {
-      console.error("Error fetching image from Unsplash:", error);
+      console.error("Error fetching image from Pexels:", error);
       return null;
     } finally {
       setIsGeneratingImage(false);
