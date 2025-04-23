@@ -254,7 +254,7 @@ const ChatbotPage = () => {
         const dishName = extractDishName(recipeText);
         recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
   
-        const imagePrompt = `${dishName} plated food`;
+        const imagePrompt = `photo of ${dishName} plated on a table, high-resolution, gourmet presentation`;
         imageData = await generateRecipeImage(imagePrompt);
   
         try {
