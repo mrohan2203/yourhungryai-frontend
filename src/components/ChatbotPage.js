@@ -169,18 +169,43 @@ const ChatbotPage = () => {
   const generateRecipeImage = async (dishName) => {
     try {
       setIsGeneratingImage(true);
-      const query = `gourmet ${dishName}, professionally styled, plated on table, high-resolution food photography`;
+      
+      const query = `${dishName} gourmet dish plated on white table food photography`;
   
       const response = await axios.get(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&client_id=${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
+        `https://api.unsplash.com/search/photos`,
+        {
+          params: {
+            query,
+            client_id: process.env.REACT_APP_UNSPLASH_ACCESS_KEY,
+            per_page: 5,
+            orientation: 'landscape'
+          }
+        }
       );
   
-      if (response.data.results.length > 0) {
+      const results = response.data.results;
+  
+      const bestMatch = results.find(photo =>
+        photo.alt_description?.toLowerCase().includes(dishName.toLowerCase()) ||
+        photo.tags?.some(tag => tag.title?.toLowerCase().includes(dishName.toLowerCase()))
+      );
+  
+      if (bestMatch) {
         return {
-          url: response.data.results[0].urls.regular,
-          alt: dishName
+          url: bestMatch.urls.regular,
+          alt: bestMatch.alt_description || dishName
         };
       }
+  
+      // Fallback to first result
+      if (results.length > 0) {
+        return {
+          url: results[0].urls.regular,
+          alt: results[0].alt_description || dishName
+        };
+      }
+  
       return null;
     } catch (error) {
       console.error("Error fetching image from Unsplash:", error);
