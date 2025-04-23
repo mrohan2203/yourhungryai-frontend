@@ -330,6 +330,16 @@ app.post('/update-password', async (req, res) => {
   res.status(200).json({ message: 'Password reset successfully', email: user.email });
 });
 
+const pexelsRes = await axios.get('https://api.unsplash.com/search/photos', {
+  params: {
+    query: `${query} plated food dish`,
+    per_page: 1,
+    orientation: 'landscape'
+  },
+  headers: {
+    Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`
+  }
+});
 
 // Start server
 const PORT = process.env.PORT || 5001;
