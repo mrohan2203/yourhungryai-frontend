@@ -169,29 +169,18 @@ const ChatbotPage = () => {
   const generateRecipeImage = async (dishName) => {
     try {
       setIsGeneratingImage(true);
+      const query = `high-quality photo of ${dishName} on a plate, styled with natural lighting, gourmet presentation`;
   
       const response = await axios.get(
-        'https://api.unsplash.com/search/photos',
-        {
-          params: {
-            query: dishName,
-            orientation: 'landscape',
-            per_page: 1
-          },
-          headers: {
-            Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`
-          }
-        }
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&client_id=${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
       );
   
-      const photo = response.data.results?.[0];
-      if (photo) {
+      if (response.data.results.length > 0) {
         return {
-          url: photo.urls?.regular || photo.urls?.full,
+          url: response.data.results[0].urls.regular,
           alt: dishName
         };
       }
-  
       return null;
     } catch (error) {
       console.error("Error fetching image from Unsplash:", error);
