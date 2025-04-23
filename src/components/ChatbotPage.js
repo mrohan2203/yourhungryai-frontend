@@ -160,23 +160,23 @@ const ChatbotPage = () => {
   const generateRecipeImage = async (dishName) => {
     try {
       setIsGeneratingImage(true);
-      const cleanedQuery = dishName.replace(/professional food photography of/i, '').trim();
-      console.log(`[ImageGen] Searching for: ${cleanedQuery}`);
+      console.log(`[ImageGen] Searching for: ${dishName}`);
   
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/proxy/image`, {
-        params: { query: cleanedQuery }
+        params: { query: `gourmet ${dishName} plated on table` }
       });
   
-      const photo = response.data.photos?.[0];
-      if (photo) {
-        console.log("[ImageGen] Found image:", photo.src?.medium || photo.src?.original);
+      const photos = response.data.photos || [];
+      if (photos.length > 0) {
+        // Randomly pick a photo from top 3 (or all if less than 3)
+        const index = Math.floor(Math.random() * Math.min(3, photos.length));
+        const photo = photos[index];
         return {
           url: photo.src?.medium || photo.src?.original,
-          alt: cleanedQuery
+          alt: dishName
         };
       }
   
-      console.warn("[ImageGen] No photo found for query:", cleanedQuery);
       return null;
     } catch (error) {
       console.error("[ImageGen] Error fetching from proxy:", error);

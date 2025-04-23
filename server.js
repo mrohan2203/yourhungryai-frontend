@@ -336,7 +336,7 @@ app.get('/proxy/image', async (req, res) => {
     const pexelsRes = await axios.get(`https://api.pexels.com/v1/search`, {
       params: {
         query: `${query} food`,
-        per_page: 1,
+        per_page: 5,
         orientation: 'landscape'
       },
       headers: {
