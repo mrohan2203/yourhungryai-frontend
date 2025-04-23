@@ -234,8 +234,6 @@ const ChatbotPage = () => {
       });
     }
   
-    const isFirstMessage = newMessages.filter(msg => msg.sender === 'user').length === 1;
-  
     try {
       const systemPrompt = {
         role: "system",
@@ -255,31 +253,30 @@ const ChatbotPage = () => {
       });
   
       let recipeText = textResponse.choices[0]?.message?.content || "Sorry, I couldn't generate a response. Please try again with a culinary question.";
+      recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
   
       let imageData = null;
       let nearbyRestaurants = '';
   
       if (!recipeText.includes("I specialize only in food-related topics")) {
-        const dishName = extractDishName(message);
-        recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
+        const dishName = extractDishName(message); // use user input as fallback
+        const imagePrompt = `professional food photography of ${dishName}, styled on a table, high-resolution, soft lighting, gourmet aesthetic`;
   
-        if (isFirstMessage) {
-          imageData = await generateRecipeImage(dishName); // ✅ Correct
+        imageData = await generateRecipeImage(imagePrompt);
   
-          try {
-            const { lat, lng } = await getUserLocation();
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/restaurants/nearby`, {
-              params: { dish: dishName, lat, lng }
-            });
+        try {
+          const { lat, lng } = await getUserLocation();
+          const res = await axios.get(`${process.env.REACT_APP_API_URL}/restaurants/nearby`, {
+            params: { dish: dishName, lat, lng }
+          });
   
-            const list = res.data?.restaurants || [];
-            nearbyRestaurants = list.length
-              ? `\n\n**Nearby Restaurants:**\n${list.slice(0, 5).map((r, i) => `${i + 1}. [${r.name}](${r.url}) - ${r.address}`).join('\n')}`
-              : `\n\n*No nearby restaurants found for "${dishName}".*`;
-          } catch (err) {
-            console.warn("Restaurant fetch failed:", err);
-            nearbyRestaurants = `\n\n*Could not retrieve nearby restaurants due to a location or server issue.*`;
-          }
+          const list = res.data?.restaurants || [];
+          nearbyRestaurants = list.length
+            ? `\n\n**Nearby Restaurants:**\n${list.slice(0, 5).map((r, i) => `${i + 1}. [${r.name}](${r.url}) - ${r.address}`).join('\n')}`
+            : `\n\n*No nearby restaurants found for "${dishName}".*`;
+        } catch (err) {
+          console.warn("Restaurant fetch failed:", err);
+          nearbyRestaurants = `\n\n*Could not retrieve nearby restaurants due to a location or server issue.*`;
         }
       }
   
@@ -338,7 +335,7 @@ const ChatbotPage = () => {
         sender: 'bot',
         timestamp: new Date().toISOString()
       }]);
-      setIsTyping(false); // restore button only on error
+      setIsTyping(false);
     }
   };
 
