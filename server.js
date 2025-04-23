@@ -330,26 +330,6 @@ app.post('/update-password', async (req, res) => {
   res.status(200).json({ message: 'Password reset successfully', email: user.email });
 });
 
-app.get('/proxy/image', async (req, res) => {
-  try {
-    const query = req.query.query;
-    const pexelsRes = await axios.get(`https://api.pexels.com/v1/search`, {
-      params: {
-        query: `${query} food`,
-        per_page: 5,
-        orientation: 'landscape'
-      },
-      headers: {
-        Authorization: process.env.PEXELS_API_KEY
-      }
-    });
-
-    res.json(pexelsRes.data);
-  } catch (error) {
-    console.error("Proxy Error:", error?.response?.data || error.message);
-    res.status(500).json({ error: 'Failed to fetch image' });
-  }
-});
 
 // Start server
 const PORT = process.env.PORT || 5001;

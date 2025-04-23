@@ -160,25 +160,33 @@ const ChatbotPage = () => {
   const generateRecipeImage = async (dishName) => {
     try {
       setIsGeneratingImage(true);
-      const refinedQuery = `real ${dishName} on table, overhead view, food plate photography`;
+      console.log(`[ImageGen] Unsplash search for: ${dishName}`);
   
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/proxy/image`, {
-        params: { query: refinedQuery }
-      });
+      const response = await axios.get(
+        `https://api.unsplash.com/search/photos`,
+        {
+          params: {
+            query: `${dishName} dish plated`,
+            per_page: 1,
+            orientation: 'landscape',
+          },
+          headers: {
+            Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`
+          }
+        }
+      );
   
-      const photos = response.data.photos || [];
-      if (photos.length > 0) {
-        const index = Math.floor(Math.random() * Math.min(photos.length, 5));
-        const photo = photos[index];
+      const photo = response.data.results?.[0];
+      if (photo) {
         return {
-          url: photo.src?.medium || photo.src?.original,
+          url: photo.urls?.regular,
           alt: dishName
         };
       }
   
       return null;
     } catch (error) {
-      console.error("[ImageGen] Error fetching from proxy:", error);
+      console.error("[ImageGen] Unsplash error:", error);
       return null;
     } finally {
       setIsGeneratingImage(false);
