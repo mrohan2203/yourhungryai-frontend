@@ -159,19 +159,36 @@ const ChatbotPage = () => {
 
   const generateRecipeImage = async (dishName) => {
     try {
+      setIsGeneratingImage(true);
+  
       const response = await axios.get(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(dishName)}&client_id=${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
+        'https://api.unsplash.com/search/photos',
+        {
+          params: {
+            query: dishName,
+            orientation: 'landscape',
+            per_page: 1
+          },
+          headers: {
+            Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`
+          }
+        }
       );
-      if (response.data.results.length > 0) {
+  
+      const photo = response.data.results?.[0];
+      if (photo) {
         return {
-          url: response.data.results[0].urls.regular,
+          url: photo.urls?.regular || photo.urls?.full,
           alt: dishName
         };
       }
+  
       return null;
     } catch (error) {
       console.error("Error fetching image from Unsplash:", error);
       return null;
+    } finally {
+      setIsGeneratingImage(false);
     }
   };
   
@@ -257,22 +274,21 @@ const ChatbotPage = () => {
         if (isFirstMessage) {
           const imagePrompt = `photo of ${dishName} plated on a table, high-resolution, gourmet presentation`;
           imageData = await generateRecipeImage(imagePrompt);
-        }
-  
-        try {
-          const { lat, lng } = await getUserLocation();
-          const res = await axios.get(`${process.env.REACT_APP_API_URL}/restaurants/nearby`, {
-            params: { dish: dishName, lat, lng }
-          });
-  
-          const list = res.data?.restaurants || [];
-          nearbyRestaurants = list.length
-            ? `\n\n**Nearby Restaurants:**\n${list.slice(0, 5).map((r, i) => `${i + 1}. [${r.name}](${r.url}) - ${r.address}`).join('\n')}`
-            : `\n\n*No nearby restaurants found for "${dishName}".*`;
-        } catch (err) {
-          console.warn("Restaurant fetch failed:", err);
-          nearbyRestaurants = `\n\n*Could not retrieve nearby restaurants due to a location or server issue.*`;
-        }
+          try {
+            const { lat, lng } = await getUserLocation();
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/restaurants/nearby`, {
+              params: { dish: dishName, lat, lng }
+            });
+    
+            const list = res.data?.restaurants || [];
+            nearbyRestaurants = list.length
+              ? `\n\n**Nearby Restaurants:**\n${list.slice(0, 5).map((r, i) => `${i + 1}. [${r.name}](${r.url}) - ${r.address}`).join('\n')}`
+              : `\n\n*No nearby restaurants found for "${dishName}".*`;
+          } catch (err) {
+            console.warn("Restaurant fetch failed:", err);
+            nearbyRestaurants = `\n\n*Could not retrieve nearby restaurants due to a location or server issue.*`;
+          }
+        } 
       }
   
       recipeText += nearbyRestaurants;
