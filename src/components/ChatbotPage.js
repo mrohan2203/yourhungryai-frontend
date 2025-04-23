@@ -142,19 +142,28 @@ const ChatbotPage = () => {
     }
   };
 
+  const MAX_ANIMATED_CHARS = 500;
+
   const typeWriterEffect = (text, callback, onComplete) => {
+    if (document.hidden || text.length > MAX_ANIMATED_CHARS) {
+      callback(text);
+      onComplete?.();
+      return;
+    }
+
     let i = 0;
     const speed = 20;
+
     const typing = () => {
       if (i < text.length) {
         callback(text.substring(0, i + 1));
         i++;
-        setTimeout(typing, speed);
+        requestAnimationFrame(typing);
       } else {
         onComplete?.();
       }
     };
-    typing();
+    requestAnimationFrame(typing);
   };
 
   const generateRecipeImage = async (dishName) => {
