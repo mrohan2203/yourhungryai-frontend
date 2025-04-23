@@ -253,9 +253,11 @@ const ChatbotPage = () => {
       if (!recipeText.includes("I specialize only in food-related topics")) {
         const dishName = extractDishName(recipeText);
         recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
-  
-        const imagePrompt = `photo of ${dishName} plated on a table, high-resolution, gourmet presentation`;
-        imageData = await generateRecipeImage(imagePrompt);
+
+        if (isFirstMessage) {
+          const imagePrompt = `photo of ${dishName} plated on a table, high-resolution, gourmet presentation`;
+          imageData = await generateRecipeImage(imagePrompt);
+        }
   
         try {
           const { lat, lng } = await getUserLocation();
