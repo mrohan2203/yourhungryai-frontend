@@ -340,7 +340,7 @@ app.get('/proxy/image', async (req, res) => {
         orientation: 'landscape'
       },
       headers: {
-        Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`
+        Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`
       }
     });
 
