@@ -160,20 +160,23 @@ const ChatbotPage = () => {
   const generateRecipeImage = async (dishName) => {
     try {
       setIsGeneratingImage(true);
-      console.log(`[ImageGen] Searching for: ${dishName}`);
-      
+      const cleanedQuery = dishName.replace(/professional food photography of/i, '').trim();
+      console.log(`[ImageGen] Searching for: ${cleanedQuery}`);
+  
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/proxy/image`, {
-        params: { query: dishName }
+        params: { query: cleanedQuery }
       });
   
       const photo = response.data.photos?.[0];
       if (photo) {
+        console.log("[ImageGen] Found image:", photo.src?.medium || photo.src?.original);
         return {
           url: photo.src?.medium || photo.src?.original,
-          alt: dishName
+          alt: cleanedQuery
         };
       }
   
+      console.warn("[ImageGen] No photo found for query:", cleanedQuery);
       return null;
     } catch (error) {
       console.error("[ImageGen] Error fetching from proxy:", error);
@@ -182,13 +185,13 @@ const ChatbotPage = () => {
       setIsGeneratingImage(false);
     }
   };
-
+  
   const extractDishName = (recipeText) => {
     const headingMatch = recipeText.match(/^##\s+(.+)$/m);
     if (headingMatch) return headingMatch[1];
     return message.split(' ').slice(0, 5).join(' ');
   };
-
+  
   const getUserLocation = () => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
@@ -224,15 +227,16 @@ const ChatbotPage = () => {
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setMessage('');
-    setIsTyping(true); // disables "New Chat" during generation and typing
+    setIsTyping(true);
   
-    // GA4 Tracking
     if (typeof window.gtag === 'function') {
       window.gtag('event', 'send_chat_message', {
         event_category: 'Chatbot',
         event_label: message,
       });
     }
+  
+    const isFirstMessage = newMessages.filter(msg => msg.sender === 'user').length === 1;
   
     try {
       const systemPrompt = {
@@ -253,15 +257,15 @@ const ChatbotPage = () => {
       });
   
       let recipeText = textResponse.choices[0]?.message?.content || "Sorry, I couldn't generate a response. Please try again with a culinary question.";
-      recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
   
       let imageData = null;
       let nearbyRestaurants = '';
   
       if (!recipeText.includes("I specialize only in food-related topics")) {
-        const dishName = extractDishName(message); // use user input as fallback
-        const imagePrompt = `professional food photography of ${dishName}, styled on a table, high-resolution, soft lighting, gourmet aesthetic`;
+        const dishName = extractDishName(recipeText);
+        recipeText = recipeText.replace(/!\[.*\]\(.*\)/g, '');
   
+        const imagePrompt = `professional food photography of ${dishName} plated and styled on a table, high-resolution, natural lighting, gourmet presentation`;
         imageData = await generateRecipeImage(imagePrompt);
   
         try {
@@ -308,7 +312,7 @@ const ChatbotPage = () => {
           });
         },
         () => {
-          setIsTyping(false); // ✅ Only re-enable "New Chat" after typing completes
+          setIsTyping(false);
         }
       );
   
@@ -338,6 +342,7 @@ const ChatbotPage = () => {
       setIsTyping(false);
     }
   };
+  
 
   const redirectToDiscord = () => {
     window.open('https://discord.gg/ZkCwK9jp', '_blank');
