@@ -159,27 +159,19 @@ const ChatbotPage = () => {
 
   const generateRecipeImage = async (dishName) => {
     try {
-      setIsGeneratingImage(true);
-      console.log(`[ImageGen] Searching for: ${dishName}`);
-  
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/proxy/image`, {
-        params: { query: dishName }
-      });
-  
-      const photo = response.data.results?.[0];
-      if (photo) {
+      const response = await axios.get(
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(dishName)}&client_id=${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
+      );
+      if (response.data.results.length > 0) {
         return {
-          url: photo.urls?.regular || photo.urls?.full,
+          url: response.data.results[0].urls.regular,
           alt: dishName
         };
       }
-  
       return null;
     } catch (error) {
-      console.error("[ImageGen] Error fetching from Unsplash proxy:", error);
+      console.error("Error fetching image from Unsplash:", error);
       return null;
-    } finally {
-      setIsGeneratingImage(false);
     }
   };
   

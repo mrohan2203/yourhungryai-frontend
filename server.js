@@ -330,27 +330,6 @@ app.post('/update-password', async (req, res) => {
   res.status(200).json({ message: 'Password reset successfully', email: user.email });
 });
 
-app.get('/proxy/image', async (req, res) => {
-  try {
-    const query = req.query.query;
-    const unsplashRes = await axios.get(`https://api.unsplash.com/search/photos`, {
-      params: {
-        query,
-        per_page: 1,
-        orientation: 'landscape'
-      },
-      headers: {
-        Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`
-      }
-    });
-
-    res.json(unsplashRes.data);
-  } catch (error) {
-    console.error('[Image Proxy] Failed:', error.message);
-    res.status(500).json({ error: 'Failed to fetch image from Unsplash' });
-  }
-});
-
 // Start server
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
