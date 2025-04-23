@@ -173,7 +173,7 @@ const ChatbotPage = () => {
       const enhancedPrompt = `${dishName} food plated on a rustic wooden table, natural lighting, gourmet presentation, high-resolution`;
   
       const response = await axios.get(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(enhancedPrompt)}&client_id=${REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(enhancedPrompt)}&client_id=${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
       );
   
       if (response.data.results.length > 0) {
