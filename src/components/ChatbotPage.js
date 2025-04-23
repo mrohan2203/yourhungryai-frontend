@@ -169,7 +169,7 @@ const ChatbotPage = () => {
   const generateRecipeImage = async (dishName) => {
     try {
       setIsGeneratingImage(true);
-      const query = `high-quality photo of ${dishName} on a plate, styled with natural lighting, gourmet presentation`;
+      const query = `gourmet ${dishName}, professionally styled, plated on table, high-resolution food photography`;
   
       const response = await axios.get(
         `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&client_id=${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
