@@ -166,9 +166,9 @@ const ChatbotPage = () => {
         `https://api.unsplash.com/search/photos`,
         {
           params: {
-            query: `${dishName} dish plated`,
+            query: `plated ${dishName} food dish on table`,
             per_page: 1,
-            orientation: 'landscape',
+            orientation: 'landscape'
           },
           headers: {
             Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`
