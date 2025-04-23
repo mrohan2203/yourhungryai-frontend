@@ -346,6 +346,7 @@ app.get('/proxy/image', async (req, res) => {
 
     res.json(pexelsRes.data);
   } catch (error) {
+    console.error("Proxy Error:", error?.response?.data || error.message);
     res.status(500).json({ error: 'Failed to fetch image' });
   }
 });

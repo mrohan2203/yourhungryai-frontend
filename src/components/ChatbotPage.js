@@ -160,16 +160,15 @@ const ChatbotPage = () => {
   const generateRecipeImage = async (dishName) => {
     try {
       setIsGeneratingImage(true);
-      console.log(`[ImageGen] Searching for: ${dishName}`);
+      const query = `gourmet ${dishName} dish high resolution plated`; // more specific
   
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/proxy/image`, {
-        params: { query: `gourmet ${dishName} plated on table` }
+        params: { query }
       });
   
       const photos = response.data.photos || [];
       if (photos.length > 0) {
-        // Randomly pick a photo from top 3 (or all if less than 3)
-        const index = Math.floor(Math.random() * Math.min(3, photos.length));
+        const index = Math.floor(Math.random() * Math.min(photos.length, 5)); // random from first 5
         const photo = photos[index];
         return {
           url: photo.src?.medium || photo.src?.original,
