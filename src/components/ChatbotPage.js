@@ -169,40 +169,17 @@ const ChatbotPage = () => {
   const generateRecipeImage = async (dishName) => {
     try {
       setIsGeneratingImage(true);
-      
-      const query = `${dishName} gourmet dish plated on white table food photography`;
+  
+      const enhancedPrompt = `${dishName} food plated on a rustic wooden table, natural lighting, gourmet presentation, high-resolution`;
   
       const response = await axios.get(
-        `https://api.unsplash.com/search/photos`,
-        {
-          params: {
-            query,
-            client_id: process.env.REACT_APP_UNSPLASH_ACCESS_KEY,
-            per_page: 5,
-            orientation: 'landscape'
-          }
-        }
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(enhancedPrompt)}&client_id=${UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
       );
   
-      const results = response.data.results;
-  
-      const bestMatch = results.find(photo =>
-        photo.alt_description?.toLowerCase().includes(dishName.toLowerCase()) ||
-        photo.tags?.some(tag => tag.title?.toLowerCase().includes(dishName.toLowerCase()))
-      );
-  
-      if (bestMatch) {
+      if (response.data.results.length > 0) {
         return {
-          url: bestMatch.urls.regular,
-          alt: bestMatch.alt_description || dishName
-        };
-      }
-  
-      // Fallback to first result
-      if (results.length > 0) {
-        return {
-          url: results[0].urls.regular,
-          alt: results[0].alt_description || dishName
+          url: response.data.results[0].urls.regular,
+          alt: dishName
         };
       }
   
