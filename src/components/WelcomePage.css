@@ -4,10 +4,13 @@
   background-position: center;
   background-repeat: no-repeat;
   min-height: 100vh;
-  justify-content: center;
   display: flex;
+  flex-direction: column; /* <== Important */
+  justify-content: center;
+  align-items: center;    /* <== Important */
   font-family: Arial, sans-serif;
   text-align: center;
+  padding: 2rem; /* Some breathing space */
 }
 
 .heading {
@@ -25,6 +28,7 @@
 .button-container {
   display: flex;
   gap: 1rem;
+  justify-content: center;
 }
 
 .login-button, .signup-button {
