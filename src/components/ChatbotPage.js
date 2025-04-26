@@ -17,6 +17,8 @@ import chatIcon from './chat-icon.svg';
 import editIcon from './edit-icon.svg';
 import removeIcon from './remove-icon.svg';
 
+const UNSPLASH_ACCESS_KEY = process.env.REACT_APP_UNSPLASH_ACCESS_KEY;
+
 const ChatbotPage = () => {
   const [isLightMode, setIsLightMode] = useState(() => {
     const storedMode = localStorage.getItem('themeMode');
@@ -174,7 +176,7 @@ const ChatbotPage = () => {
       console.log("Searching Unsplash for:", enhancedPrompt);  // <-- TEMP debug
   
       const response = await axios.get(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(enhancedPrompt)}&client_id=${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(enhancedPrompt)}&client_id=${UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
       );
   
       if (response.data.results.length > 0) {
