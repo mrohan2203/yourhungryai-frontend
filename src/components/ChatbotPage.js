@@ -256,19 +256,32 @@ const ChatbotPage = () => {
     const isFirstMessage = newMessages.filter(msg => msg.sender === 'user').length === 1;
   
     try {
-      const systemPrompt = {
-        role: "system",
-        content: "You are a knowledgeable culinary expert specializing in all world cuisines, cooking techniques, and food science. Use context from the conversation to answer follow-up questions accurately."
-      };
-  
-      const contextMessages = newMessages.slice(-6).map(msg => ({
-        role: msg.sender === 'user' ? 'user' : 'assistant',
-        content: msg.text
-      }));
-  
+      const culinaryPrompt = `
+      You are a world-class culinary assistant. Provide a detailed Markdown response with:
+
+      1. Dish name as heading (## Dish Name)
+      2. Ingredients list (bullet points)
+      3. Preparation method (numbered steps)
+      4. Cooking time and difficulty
+      5. **Approximate calories per serving** (e.g., "**Calories:** ~350 kcal")
+
+      Only answer with the formatted recipe and calories. No extra text or explanations.
+
+      Query: "${message}"
+      `;
+
       const textResponse = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
-        messages: [systemPrompt, ...contextMessages],
+        messages: [
+          {
+            role: "system",
+            content: "You are a knowledgeable culinary expert specializing in all world cuisines, cooking techniques, food science, and nutritional facts."
+          },
+          {
+            role: "user",
+            content: culinaryPrompt
+          }
+        ],
         temperature: 0.7,
         max_tokens: 1000
       });
