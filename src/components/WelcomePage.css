@@ -1,10 +1,11 @@
 .welcome-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  background-image: url('/welcome-background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
   justify-content: center;
-  height: 100vh;
-  background-color: #32343a; /* Dark gray background */
+  display: flex;
   font-family: Arial, sans-serif;
   text-align: center;
 }
