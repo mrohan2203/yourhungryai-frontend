@@ -1,5 +1,5 @@
 .welcome-container {
-  background-image: url('/welcome-background.png');
+  background-image: url('welcome-background.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
