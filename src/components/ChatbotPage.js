@@ -362,7 +362,7 @@ const ChatbotPage = () => {
   
 
   const redirectToDiscord = () => {
-    window.open('https://discord.gg/ZkCwK9jp', '_blank');
+    window.open('https://discord.gg/EcaHFBsV', '_blank');
   };
 
   return (
