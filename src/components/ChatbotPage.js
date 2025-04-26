@@ -292,7 +292,7 @@ const ChatbotPage = () => {
     
             const list = res.data?.restaurants || [];
             nearbyRestaurants = list.length
-              ? `\n\n**Nearby Restaurants:**\n${list.slice(0, 5).map((r, i) => `${i + 1}. [${r.name}](${r.url}) - ${r.address}`).join('\n')}`
+              ? `\n\n**Nearby Restaurants:**\n${list.slice(0, 5).map((r, i) => `${i + 1}. <a href="${r.url}" target="_blank" rel="noopener noreferrer">${r.name}</a> - ${r.address}`).join('\n')}`
               : `\n\n*No nearby restaurants found for "${dishName}".*`;
           } catch (err) {
             console.warn("Restaurant fetch failed:", err);
