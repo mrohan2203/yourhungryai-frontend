@@ -157,7 +157,7 @@ app.get('/restaurants/nearby', async (req, res) => {
     const restaurants = response.data.results.map(place => ({
       name: place.name,
       address: place.vicinity || 'Address not available',
-      url: `https://www.ubereats.com/search?query=${place.place_id}`
+      url: `https://www.ubereats.com/search?query=${encodeURIComponent(place.name)}`
     }));
 
     res.json({ restaurants });
