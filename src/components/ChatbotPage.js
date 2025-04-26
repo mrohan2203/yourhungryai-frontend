@@ -195,19 +195,19 @@ const ChatbotPage = () => {
   };
   
   const extractDishName = (recipeText) => {
-    const headingMatch = recipeText.match(/^##\s+(.+)$/m);
-    if (headingMatch) return headingMatch[1].trim();
-  
-    // Fallback: clean user message to extract main dish
-    const cleaned = message
-      .toLowerCase()
-      .replace(/how to (make|cook|prepare)\s+/g, '')  // remove starting phrases
-      .replace(/what is\s+/g, '')
-      .replace(/[?.!]/g, '')  // remove punctuation
-      .trim();
-  
-    return cleaned; // keep full dish name
-  };
+  const headingMatch = recipeText.match(/^##\s+(.+)$/m);
+  if (headingMatch) return headingMatch[1].trim();
+
+  // Fallback: clean user message to extract main dish
+  const cleaned = message
+    .toLowerCase()
+    .replace(/how to (make|cook|prepare)\s+/g, '')  // remove starting phrases
+    .replace(/what is\s+/g, '')
+    .replace(/[?.!]/g, '')  // remove punctuation
+    .trim();
+
+  return cleaned; // keep full dish name
+  };  
   
   const getUserLocation = () => {
     return new Promise((resolve, reject) => {
