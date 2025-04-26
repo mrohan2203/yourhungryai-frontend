@@ -172,11 +172,10 @@ const ChatbotPage = () => {
     try {
       setIsGeneratingImage(true);
   
-      const enhancedPrompt = `photo of ${dishName} dish, gourmet plating, rustic wooden table, natural light, top-down angle, high-resolution`;
-      console.log("Searching Unsplash for:", enhancedPrompt);  // <-- TEMP debug
+      const query = dishName; // ONLY dish name, no extra styling keywords
   
       const response = await axios.get(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(enhancedPrompt)}&client_id=${UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&client_id=${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
       );
   
       if (response.data.results.length > 0) {
