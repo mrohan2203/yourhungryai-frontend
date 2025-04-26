@@ -198,15 +198,15 @@ const ChatbotPage = () => {
     const headingMatch = recipeText.match(/^##\s+(.+)$/m);
     if (headingMatch) return headingMatch[1].trim();
   
-    // Fallback: extract last word from common query pattern like "how to make X?"
+    // Fallback: clean user message to extract main dish
     const cleaned = message
       .toLowerCase()
-      .replace(/how to (make|cook|prepare)\s+/g, '')
-      .replace(/[^\w\s]/g, '') // remove punctuation
+      .replace(/how to (make|cook|prepare)\s+/g, '')  // remove starting phrases
+      .replace(/what is\s+/g, '')
+      .replace(/[?.!]/g, '')  // remove punctuation
       .trim();
   
-    const words = cleaned.split(' ');
-    return words[words.length - 1]; // e.g., "pizza"
+    return cleaned; // keep full dish name
   };
   
   const getUserLocation = () => {
