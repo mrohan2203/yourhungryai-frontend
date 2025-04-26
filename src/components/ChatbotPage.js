@@ -172,10 +172,10 @@ const ChatbotPage = () => {
     try {
       setIsGeneratingImage(true);
   
-      const query = dishName; // ONLY dish name, no extra styling keywords
+      console.log(`Searching Unsplash for image of dish: "${dishName}"`);
   
       const response = await axios.get(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&client_id=${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
+        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(dishName)}&client_id=${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}&per_page=1&orientation=landscape`
       );
   
       if (response.data.results.length > 0) {
