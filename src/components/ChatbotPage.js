@@ -196,8 +196,17 @@ const ChatbotPage = () => {
   
   const extractDishName = (recipeText) => {
     const headingMatch = recipeText.match(/^##\s+(.+)$/m);
-    if (headingMatch) return headingMatch[1];
-    return message.split(' ').slice(0, 5).join(' ');
+    if (headingMatch) return headingMatch[1].trim();
+  
+    // Fallback: extract last word from common query pattern like "how to make X?"
+    const cleaned = message
+      .toLowerCase()
+      .replace(/how to (make|cook|prepare)\s+/g, '')
+      .replace(/[^\w\s]/g, '') // remove punctuation
+      .trim();
+  
+    const words = cleaned.split(' ');
+    return words[words.length - 1]; // e.g., "pizza"
   };
   
   const getUserLocation = () => {
