@@ -116,6 +116,11 @@
   margin: 0 auto 1rem auto; /* centered container but left content */
 }
 
+.remember-me input {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: rgba(255, 255, 255, 0.2);
+}
+
 .remember-me label {
   font-size: 0.9rem;
   margin-left: 0.5rem;
