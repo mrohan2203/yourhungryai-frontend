@@ -23,13 +23,13 @@
   width: 100%;
   max-width: 400px;
   text-align: center;
-  color: #d1d1d1;
+  color: #ffffff;
 }
 
 .welcome-heading b {
   font-size: 1.8rem; /* bigger only for Welcome back */
   font-weight: bold;
-  color: #d1d1d1;
+  color: #ffffff;
   margin-bottom: 1.5rem;
 }
 
@@ -37,7 +37,7 @@
 .glass-box p,
 .glass-box label,
 .glass-box span {
-  color: #d1d1d1;
+  color: #ffffff;
 }
 
 /* Fix the success message and error message */
@@ -91,7 +91,7 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 0.5rem;
   box-sizing: border-box; /* Very important to prevent overflow */
-  color: #d1d1d1;
+  color: #ffffff;
   font-size: 1rem;
   outline: none;
   backdrop-filter: blur(10px);
@@ -104,7 +104,7 @@
 
 /* Placeholders */
 .glass-box input::placeholder {
-  color: #d1d1d1;
+  color: #ffffff;
 }
 
 /* Focus and Hover effects */
@@ -155,7 +155,7 @@
 }
 
 .remember-me label {
-  color: #d1d1d1;
+  color: #ffffff;
   font-size: 0.9rem;
 }
 
