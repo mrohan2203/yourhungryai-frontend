@@ -3,7 +3,6 @@ import './VerifyOtpPage.css';
 import { useNavigate } from 'react-router-dom';
 import successIcon from './success-icon.svg';
 import errorIcon from './error-icon.svg';
-import yourhungrylogo from "./yourhungry-logo.png";
 
 const VerifyOtpPage = () => {
   const [otp, setOtp] = useState('');
@@ -50,7 +49,6 @@ const VerifyOtpPage = () => {
             <img src={errorIcon} alt="Error" className="message-icon" /> {error}
           </div>
         )}
-        <img src={yourhungrylogo} alt="YourHungry Logo" className="verify-logo" />
         <p><b>Just a few steps....</b></p>
         <p className="subtext">Type the OTP received in your email</p>
         <input
