@@ -6,6 +6,7 @@ import errorIcon from "./error-icon.svg";
 import googleLogo from "./google-icon.svg";
 import githubLogo from "./github-icon.svg";
 import yourhungrylogo from "./yourhungry-logo.png";
+import './WelcomePage.css';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -97,71 +98,69 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-container">
-      {successMessage && (
-        <div className="success-message-container">
-          <img src={successIcon} alt="Success" className="message-icon" />
-          {successMessage}
-        </div>
-      )}
-      {error && (
-        <div className="error">
-          <img src={errorIcon} alt="Error" className="message-icon" />
-          {error}
-        </div>
-      )}
-      <img src={yourhungrylogo} alt="YourHungry Logo" className="login-logo" />
-      <p>
-        <b>Welcome back</b>
-      </p>
-      <input
-        type="email"
-        placeholder="Email address"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <div className="remember-me">
+    <div className="login-background">
+      <div className="glass-box">
+        {successMessage && (
+          <div className="success-message-container">
+            <img src={successIcon} alt="Success" className="message-icon" />
+            {successMessage}
+          </div>
+        )}
+        {error && (
+          <div className="error">
+            <img src={errorIcon} alt="Error" className="message-icon" />
+            {error}
+          </div>
+        )}
+        <img src={yourhungrylogo} alt="YourHungry Logo" className="login-logo" />
+        <p><b>Welcome back</b></p>
         <input
-          type="checkbox"
-          id="rememberMe"
-          checked={rememberMe}
-          onChange={(e) => setRememberMe(e.target.checked)}
+          type="email"
+          placeholder="Email address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
-        <label htmlFor="rememberMe">Remember me</label>
-      </div>
-      <button className="continue-button" onClick={handleSubmit}>
-        Continue
-      </button>
-      <p className="forgot-password-text">
-        Forgot your password? <span onClick={() => navigate('/request-otp')}>Reset it</span>
-      </p>
-      <p className="signup-text">
-        Don't have an account? <span onClick={handleSignupClick}>Sign up</span>
-      </p>
-      <div className="or-divider">
-        <span>OR</span>
-      </div>
-      <div className="social-buttons">
-        <button className="google-button" onClick={() => window.location.href = `${process.env.REACT_APP_API_URL}/auth/google`}>
-          <img src={googleLogo} alt="Google Logo" className="button-logo" />
-          Continue with Google
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <div className="remember-me">
+          <input
+            type="checkbox"
+            id="rememberMe"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+          />
+          <label htmlFor="rememberMe">Remember me</label>
+        </div>
+        <button className="continue-button" onClick={handleSubmit}>
+          Continue
         </button>
-
-        <button className="github-button" onClick={() => window.location.href = `${process.env.REACT_APP_API_URL}/auth/github`}>
-          <img src={githubLogo} alt="GitHub Logo" className="button-logo" />
-          Continue with GitHub
-        </button>
+        <p className="forgot-password-text">
+          Forgot your password? <span onClick={() => navigate('/request-otp')}>Reset it</span>
+        </p>
+        <p className="signup-text">
+          Don't have an account? <span onClick={handleSignupClick}>Sign up</span>
+        </p>
+        <div className="or-divider">
+          <span>OR</span>
+        </div>
+        <div className="social-buttons">
+          <button className="google-button" onClick={() => window.location.href = `${process.env.REACT_APP_API_URL}/auth/google`}>
+            <img src={googleLogo} alt="Google Logo" className="button-logo" />
+            Continue with Google
+          </button>
+          <button className="github-button" onClick={() => window.location.href = `${process.env.REACT_APP_API_URL}/auth/github`}>
+            <img src={githubLogo} alt="GitHub Logo" className="button-logo" />
+            Continue with GitHub
+          </button>
+        </div>
       </div>
     </div>
   );
-};
-
+}
 export default LoginPage;
 
 /* eof */
