@@ -1,4 +1,4 @@
-/* LoginPage.css */
+/* Full background */
 .login-background {
   background-image: url('welcome-background.png');
   background-size: cover;
@@ -12,8 +12,9 @@
   padding: 2rem;
 }
 
+/* Glass box for login form */
 .glass-box {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.7);
   border-radius: 1rem;
   padding: 2rem;
   backdrop-filter: blur(10px);
@@ -22,19 +23,6 @@
   width: 100%;
   max-width: 400px;
   text-align: center;
-}
-
-/* Container for the entire login page */
-.login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #ffffff; /* White background */
-  font-family: Arial, sans-serif;
-  color: #2E3339; /* Dark gray text */
-  padding: 1rem;
 }
 
 /* Success message container */
