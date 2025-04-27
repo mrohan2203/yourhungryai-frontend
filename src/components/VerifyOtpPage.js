@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './VerifyOtpPage.css'; 
+import './ResetPasswordPage.css';
 import { useNavigate } from 'react-router-dom';
 import successIcon from './success-icon.svg';
 import errorIcon from './error-icon.svg';
@@ -38,32 +38,24 @@ const VerifyOtpPage = () => {
   };
 
   return (
-    <div className="verify-otp-background">
-      <div className="glass-box">
-        {successMessage && (
-          <div className="success-message-container">
-            <img src={successIcon} alt="Success" className="message-icon" /> {successMessage}
-          </div>
-        )}
-        {error && (
-          <div className="error">
-            <img src={errorIcon} alt="Error" className="message-icon" /> {error}
-          </div>
-        )}
-        <img src={yourhungrylogo} alt="YourHungry Logo" className="verify-logo" />
-        <p><b>Just a few steps....</b></p>
-        <p className="subtext">Type the OTP received in your email</p>
-        <input
-          type="text"
-          placeholder="Enter OTP"
-          value={otp}
-          onChange={(e) => setOtp(e.target.value)}
-        />
-        <button className="continue-button" onClick={handleVerify}>Verify</button>
-        <p className="back-to-login-text">
-          Entered wrong email? <span onClick={() => navigate('/login')}>Back to Login</span>
-        </p>
-      </div>
+    <div className="reset-password-container">
+      {successMessage && <div className="success-message-container">
+        <img src={successIcon} alt="Success" className="message-icon" /> {successMessage}
+      </div>}
+      {error && <div className="error">
+        <img src={errorIcon} alt="Error" className="message-icon" /> {error}
+      </div>}
+      <img src={yourhungrylogo} alt="YourHungry Logo" className="request-logo" />
+      <p><b>Just a few steps....</b></p>
+      <p className="subtext">Type the OTP received in your email</p>
+      <input
+        type="text"
+        placeholder="OTP"
+        value={otp}
+        onChange={(e) => setOtp(e.target.value)}
+      />
+      <button className="continue-button" onClick={handleVerify}>Verify</button>
+      <p className="back-to-login-text">Entered wrong email? <span onClick={() => navigate('/login')}>Back to Login</span></p>
     </div>
   );
 };
