@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './ResetPasswordPage.css';
+import './SetNewPasswordPage.css';
 import { useNavigate } from 'react-router-dom';
 import errorIcon from './error-icon.svg';
 import successIcon from './success-icon.svg';
