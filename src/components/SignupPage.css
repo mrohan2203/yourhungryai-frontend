@@ -1,18 +1,32 @@
-/* SignupPage.css */
-
-/* Container for the entire signup page */
-.signup-container {
+/* Background */
+.signup-background {
+  background-image: url('welcome-background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: 100vh;
-  background-color: #ffffff; /* White background */
+  align-items: center;
   font-family: Arial, sans-serif;
-  color: #2E3339; /* Dark gray text */
-  padding: 1rem;
+  padding: 2rem;
 }
 
+/* Frosted glass box */
+.glass-box {
+  background: rgba(32, 33, 35, 0.7);
+  border-radius: 1rem;
+  padding: 2rem;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  color: #d1d1d1;
+}
+
+/* Logo */
 .signup-logo {
   width: 100px;
   margin: 0 auto 20px;
@@ -20,137 +34,80 @@
 }
 
 /* Heading */
-.signup-container p {
-  font-size: 2rem;
+.glass-box p {
+  font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
   margin-top: 0.5rem;
-  color: #2E3339; /* Dark gray for "YourAI says Hello!" */
 }
 
 /* Input fields */
-.signup-container input {
+.glass-box input[type="email"],
+.glass-box input[type="password"] {
   width: 100%;
-  max-width: 300px;
   padding: 0.8rem;
   margin-bottom: 1rem;
-  border: 1px solid #0FA474; /* Green border */
-  border-radius: 5px;
-  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
+  color: #d1d1d1;
   outline: none;
-  background-color: #ffffff; /* White background */
-  color: #2E3339; /* Dark gray text */
+  font-size: 1rem;
 }
 
-.signup-container input:focus {
-  border-color: #0d8e66; /* Darker green on focus */
+.glass-box input::placeholder {
+  color: #d1d1d1;
 }
 
 /* Continue button */
-.signup-container .continue-button {
+.continue-button {
   width: 100%;
-  max-width: 300px;
   padding: 0.8rem;
   font-size: 1rem;
-  background-color: #0FA474; /* Green background */
-  color: white;
+  background-color: #0FA474;
+  color: #d1d1d1;
   border: none;
-  border-radius: 5px;
+  border-radius: 0.5rem;
   cursor: pointer;
   margin-bottom: 1rem;
   transition: background-color 0.3s ease;
 }
 
-.signup-container .continue-button:hover {
-  background-color: #0d8e66; /* Darker green on hover */
+.continue-button:hover {
+  background-color: #0d8e66;
 }
 
 /* Login text */
-.signup-container .login-text {
+.login-text {
   font-size: 0.9rem;
-  color: #2E3339; /* Dark gray text */
-  margin-bottom: 1rem;
-  font-weight: normal;
+  margin-top: 1rem;
 }
 
-.signup-container .login-text span {
-  color: #0FA474; /* Green text for "Login" */
+.login-text span {
+  color: #0FA474;
   cursor: pointer;
-  text-decoration: none;
+  font-weight: bold;
 }
 
-/* Divider */
-.or-divider {
-  display: flex;
-  align-items: center;
+/* Error message */
+.error {
   width: 100%;
-  max-width: 300px;
-  margin: 1rem 0;
-}
-
-.or-divider::before,
-.or-divider::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid #C3C8CF; /* Light gray divider */
-}
-
-.or-divider span {
-  padding: 0 10px;
-  color: #2E3339; /* Dark gray text for "OR" */
-}
-
-/* Social buttons */
-.social-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  width: 100%;
-}
-
-.social-buttons button {
-  width: 200%;
-  max-width: 300px;
   padding: 0.8rem;
-  font-size: 0.9rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #d1d1d1; /* Dark gray text */
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  gap: 10px;
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #ff0000;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: normal;
+  margin-bottom: 1rem;
   border-radius: 5px;
-  cursor: pointer;
+  border: 1px solid #ff0000;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s ease;
+  gap: 0.5rem;
 }
 
-.social-buttons button:hover {
-  background: rgba(32, 33, 35, 0.7); /* Slightly lighter glass on hover */
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Button logos */
-.button-logo {
+.message-icon {
   width: 16px;
   height: 16px;
-  margin-right: 10px;
-}
-
-.error {
-  width: 100%;
-  max-width: 300px;
-  padding: 0.8rem;
-  background-color: rgba(255, 0, 0, 0.1); /* Light red background */
-  color: #ff0000; /* Red text */
-  text-align: center;
-  font-size: 0.75rem; /* Reduced font size */
-  font-weight: normal; /* Ensure text is not bold */
-  margin-bottom: 1rem;
-  border-radius: 5px; /* Rounded corners */
-  border: 1px solid #ff0000; /* Red border */
-  display: flex;
-  align-items: center;
-  justify-content: center; /* Center content horizontally */
-  gap: 0.5rem; /* Space between icon and text */
 }

@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SignupPage.css';
 import errorIcon from './error-icon.svg';
-import yourhungrylogo from "./yourhungry-logo.png";
-
+import yourhungrylogo from './yourhungry-logo.png';
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -17,21 +16,16 @@ const SignupPage = () => {
       setError('Passwords do not match');
       return;
     }
-
     if (password.length < 6) {
       setError('Password must be at least 6 characters long');
       return;
     }
-
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/signup`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, retypePassword }),
       });
-
       const data = await response.json();
       if (response.ok) {
         navigate('/login', { state: { successMessage: 'Account created successfully! Please log in.' } });
@@ -44,39 +38,45 @@ const SignupPage = () => {
   };
 
   const handleLoginClick = () => {
-    navigate('/login'); // Navigate to LoginPage
+    navigate('/login');
   };
 
   return (
-    <div className="signup-container">
-      {error && <div className="error">
-        <img src = {errorIcon} alt = "Error" className='message-icon' />{error}</div>}
+    <div className="signup-background">
+      <div className="glass-box">
+        {error && (
+          <div className="error">
+            <img src={errorIcon} alt="Error" className="message-icon" />
+            {error}
+          </div>
+        )}
         <img src={yourhungrylogo} alt="YourHungry Logo" className="signup-logo" />
-      <p><b>YourAI says Hello!</b></p>
-      <input
-        type="email"
-        placeholder="Email address"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Retype Password"
-        value={retypePassword}
-        onChange={(e) => setRetypePassword(e.target.value)}
-      />
-      <button className="continue-button" onClick={handleSubmit}>
-        Continue
-      </button>
-      <p className="login-text">
-        Have an account? <span onClick={handleLoginClick}>Login</span>
-      </p>
+        <p><b>YourAI says Hello!</b></p>
+        <input
+          type="email"
+          placeholder="Email address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Retype Password"
+          value={retypePassword}
+          onChange={(e) => setRetypePassword(e.target.value)}
+        />
+        <button className="continue-button" onClick={handleSubmit}>
+          Continue
+        </button>
+        <p className="login-text">
+          Have an account? <span onClick={handleLoginClick}>Login</span>
+        </p>
+      </div>
     </div>
   );
 };
