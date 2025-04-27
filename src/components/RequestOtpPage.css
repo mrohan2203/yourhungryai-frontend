@@ -11,6 +11,7 @@
     padding: 2rem;
   }
   
+  /* Glass box */
   .glass-box {
     background: rgba(32, 33, 35, 0.7);
     border-radius: 1rem;
@@ -25,18 +26,20 @@
   }
   
   /* Logo */
-  .otp-logo {
+  .request-logo {
     width: 100px;
     margin: 0 auto 20px;
     display: block;
   }
   
-  /* All text */
+  /* Text */
   .glass-box p {
-    font-size: 1.5rem;
-    font-weight: bold;
+    color: #d1d1d1;
+  }
+  
+  .subtext {
+    font-size: 0.9rem;
     margin-bottom: 1.5rem;
-    margin-top: 0.5rem;
   }
   
   /* Input */
@@ -56,7 +59,7 @@
     color: #d1d1d1;
   }
   
-  /* Continue button */
+  /* Button */
   .continue-button {
     width: 100%;
     padding: 0.8rem;
@@ -66,8 +69,8 @@
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
     margin-bottom: 1rem;
+    transition: background-color 0.3s ease;
   }
   
   .continue-button:hover {
@@ -104,4 +107,17 @@
   .message-icon {
     width: 16px;
     height: 16px;
+  }
+  
+  /* Back to Login link */
+  .back-to-login-text {
+    font-size: 0.9rem;
+    color: #d1d1d1;
+    margin-top: 1rem;
+  }
+  
+  .back-to-login-text span {
+    color: #0FA474;
+    cursor: pointer;
+    font-weight: bold;
   }
