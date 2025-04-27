@@ -129,6 +129,21 @@
   cursor: pointer;
   position: relative;
   margin-right: 0.5rem;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.remember-me input[type="checkbox"]:checked {
+  background-color: #0d6efd; /* blue background when checked */
+  border-color: #0d6efd;
+}
+
+.remember-me input[type="checkbox"]:checked::after {
+  content: "✔";
+  color: white; /* white tick */
+  font-size: 14px;
+  position: absolute;
+  top: -2px;
+  left: 3px;
 }
 
 .remember-me label {
