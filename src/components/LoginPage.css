@@ -84,7 +84,8 @@
 
 /* Input fields */
 .glass-box input[type="email"],
-.glass-box input[type="password"] {
+.glass-box input[type="password"]
+.glass-box .social-buttons button {
   width: 100%;
   padding: 0.8rem;
   margin-bottom: 1rem;
