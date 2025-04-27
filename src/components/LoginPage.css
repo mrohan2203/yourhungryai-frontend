@@ -109,6 +109,7 @@
   display: flex;
   align-items: center;
   margin: 1rem 0;
+  color: #ffffff;
 }
 
 .or-divider::before,
