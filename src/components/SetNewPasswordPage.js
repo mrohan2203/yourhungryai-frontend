@@ -48,32 +48,40 @@ const SetNewPasswordPage = () => {
   };
 
   return (
-    <div className="reset-password-container">
-      {successMessage && <div className="success-message-container">
-        <img src={successIcon} alt="Success" className="message-icon" /> {successMessage}
-      </div>}
-      {error && <div className="error">
-        <img src={errorIcon} alt="Error" className="message-icon" /> {error}
-      </div>}
-      <img src={yourhungrylogo} alt="YourHungry Logo" className="request-logo" />
-      <p><b>Almost there</b></p>
-      <p className="subtext">Type in your new password!</p>
-      <input
-        type="password"
-        placeholder="New Password"
-        value={newPassword}
-        onChange={(e) => setNewPassword(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Retype"
-        value={retypePassword}
-        onChange={(e) => setRetypePassword(e.target.value)}
-      />
-      <button className="continue-button" onClick={handleUpdate}>Update</button>
-      <p className="back-to-login-text">
-        Remember your password? <span onClick={() => navigate('/login')}>Sign up</span>
-      </p>
+    <div className="reset-password-background">
+      <div className="glass-box">
+        {successMessage && (
+          <div className="success-message-container">
+            <img src={successIcon} alt="Success" className="message-icon" /> {successMessage}
+          </div>
+        )}
+        {error && (
+          <div className="error">
+            <img src={errorIcon} alt="Error" className="message-icon" /> {error}
+          </div>
+        )}
+        <img src={yourhungrylogo} alt="YourHungry Logo" className="reset-logo" />
+        <p><b>Almost there</b></p>
+        <p className="subtext">Type in your new password!</p>
+        <input
+          type="password"
+          placeholder="New Password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Retype"
+          value={retypePassword}
+          onChange={(e) => setRetypePassword(e.target.value)}
+        />
+        <button className="continue-button" onClick={handleUpdate}>
+          Update Password
+        </button>
+        <p className="back-to-login-text">
+          Remembered your password? <span onClick={() => navigate('/login')}>Back to Login</span>
+        </p>
+      </div>
     </div>
   );
 };
