@@ -105,13 +105,15 @@
 .remember-me {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center; /* <-- Center align horizontally */
   width: 100%;
+  max-width: 300px;
   margin-bottom: 1rem;
 }
 .remember-me label {
   font-size: 0.9rem;
   margin-left: 0.5rem;
+  color: #d1d1d1;
 }
 
 /* Continue button */
