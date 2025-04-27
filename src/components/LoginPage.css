@@ -133,7 +133,6 @@
 }
 .continue-button:hover {
   background-color: #0d8e66;
-  transform: translateY(-2px); /* Small lift on hover */
 }
 
 /* Forgot Password and Signup */

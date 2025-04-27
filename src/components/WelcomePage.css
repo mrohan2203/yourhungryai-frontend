@@ -61,7 +61,6 @@
 .login-button:hover,
 .signup-button:hover {
   background-color: #0d8e66; /* Darker green */
-  transform: translateY(-2px); /* Small lift on hover */
 }
 
 /* --- Optional: Responsive Tweak --- */
