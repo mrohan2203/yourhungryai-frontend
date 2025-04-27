@@ -145,12 +145,13 @@
 .signup-text {
   font-size: 0.9rem;
   margin-bottom: 1rem;
+  
 }
 .forgot-password-text span,
 .signup-text span {
   color: #0FA474;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: normal;
   margin-bottom: 1rem;
 }
 
