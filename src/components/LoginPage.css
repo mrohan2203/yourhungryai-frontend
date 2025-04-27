@@ -14,14 +14,15 @@
 
 /* Glass box for login form */
 .glass-box {
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 1rem;
-  padding: 2rem;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
+  background: rgba(32, 33, 35, 0.7); /* Dark semi-transparent */
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px); /* For Safari */
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 3rem 2rem;
+  max-width: 500px;
+  width: 90%;
   text-align: center;
 }
 
