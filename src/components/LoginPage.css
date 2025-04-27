@@ -119,7 +119,7 @@
   justify-content: flex-start; /* align starting */
   align-items: center;
   width: 100%;
-  max-width: 300px; /* same as input */
+  max-width: 275px; /* same as input */
   margin: 0 auto 1rem auto; /* center the whole block */
   padding-left: 0.5rem; /* slight left padding inside */
   gap: 0.5rem;
