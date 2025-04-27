@@ -113,9 +113,9 @@
   width: 100%;
   padding: 0.8rem;
   font-size: 0.9rem;
-  background-color: #ffffff; /* White background */
-  color: #2E3339; /* Dark gray text */
-  border: 1px solid #C3C8CF; /* Light gray border */
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #d1d1d1; /* Dark gray text */
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 5px;
   cursor: pointer;
   display: flex;
