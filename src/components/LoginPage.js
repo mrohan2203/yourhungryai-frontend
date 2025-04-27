@@ -144,9 +144,6 @@ const LoginPage = () => {
         <p className="signup-text">
           Don't have an account? <span onClick={handleSignupClick}>Sign up</span>
         </p>
-        <div className="or-divider">
-          <span>OR</span>
-        </div>
         <div className="social-buttons">
           <button className="google-button" onClick={() => window.location.href = `${process.env.REACT_APP_API_URL}/auth/google`}>
             <img src={googleLogo} alt="Google Logo" className="button-logo" />
