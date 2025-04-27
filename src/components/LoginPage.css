@@ -90,6 +90,7 @@
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 0.5rem;
+  box-sizing: border-box; /* Very important to prevent overflow */
   color: #d1d1d1;
   font-size: 1rem;
   outline: none;
