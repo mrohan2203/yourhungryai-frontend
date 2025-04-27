@@ -26,6 +26,48 @@
   color: #ffffff;
 }
 
+/* Success message container */
+.success-message-container {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.8rem;
+  background-color: rgba(15, 164, 116, 0.1); /* Light green background */
+  color: #0FA474; /* Green text */
+  text-align: center;
+  font-size: 0.75rem; /* Consistent font size */
+  margin-bottom: 1rem;
+  border-radius: 5px; /* Rounded corners */
+  border: 1px solid #0FA474; /* Green border */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center content horizontally */
+  gap: 0.5rem; /* Space between icon and text */
+}
+
+.error {
+  width: 100%;
+  max-width: 300px;
+  padding: 0.8rem;
+  background-color: rgba(255, 0, 0, 0.1); /* Light red background */
+  color: #ff0000; /* Red text */
+  text-align: center;
+  font-size: 0.75rem; /* Reduced font size */
+  font-weight: normal; /* Ensure text is not bold */
+  margin-bottom: 1rem;
+  border-radius: 5px; /* Rounded corners */
+  border: 1px solid #ff0000; /* Red border */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center content horizontally */
+  gap: 0.5rem; /* Space between icon and text */
+}
+
+/* Message icon */
+.message-icon {
+  width: 16px; /* Icon size */
+  height: 16px; /* Icon size */
+}
+
 /* Logo */
 .login-logo {
   width: 100px;
