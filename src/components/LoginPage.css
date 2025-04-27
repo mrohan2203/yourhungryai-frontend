@@ -14,7 +14,7 @@
 
 /* Frosted glass box */
 .glass-box {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(32, 33, 35, 0.7);
   border-radius: 1rem;
   padding: 2rem;
   backdrop-filter: blur(12px);
