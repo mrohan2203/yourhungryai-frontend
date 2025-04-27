@@ -89,6 +89,11 @@
   backdrop-filter: blur(10px);
 }
 
+.glass-box input[type="checkbox"] {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: rgba(255, 255, 255, 0.2);
+}
+
 /* Placeholders */
 .glass-box input::placeholder {
   color: #d1d1d1;
