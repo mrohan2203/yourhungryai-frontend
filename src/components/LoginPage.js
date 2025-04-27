@@ -112,7 +112,6 @@ const LoginPage = () => {
             {error}
           </div>
         )}
-        <img src={yourhungrylogo} alt="YourHungry Logo" className="login-logo" />
         <p><b>Welcome back</b></p>
         <input
           type="email"
