@@ -3,7 +3,7 @@ import './ResetPasswordPage.css';
 import { useNavigate } from 'react-router-dom';
 import errorIcon from './error-icon.svg';
 import successIcon from './success-icon.svg';
-import yourhungrylogo from "./yourhungry-logo.png";
+
 
 const SetNewPasswordPage = () => {
   const [newPassword, setNewPassword] = useState('');
@@ -60,7 +60,6 @@ const SetNewPasswordPage = () => {
             <img src={errorIcon} alt="Error" className="message-icon" /> {error}
           </div>
         )}
-        <img src={yourhungrylogo} alt="YourHungry Logo" className="reset-logo" />
         <p><b>Almost there</b></p>
         <p className="subtext">Type in your new password!</p>
         <input
