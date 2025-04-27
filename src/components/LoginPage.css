@@ -118,45 +118,47 @@
 .remember-me {
   display: flex;
   align-items: center;
-  justify-content: center; /* <-- Center it horizontally */
+  justify-content: center; /* <-- Forcefully center the checkbox+label */
   gap: 0.5rem;
   width: 100%;
-  max-width: 300px;
   margin-bottom: 1rem;
   font-size: 0.9rem;
-  color: #ffffff;
+  color: #d1d1d1;
+  text-align: center;
 }
 
-/* Checkbox Styling */
+/* Checkbox */
 .remember-me input[type="checkbox"] {
   appearance: none;
   width: 18px;
   height: 18px;
-  background: rgba(255, 255, 255, 0.1); /* glassy look */
+  background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
   cursor: pointer;
   position: relative;
+  display: inline-block;
 }
 
-/* On check: Blue background and white tick */
+/* Checked state */
 .remember-me input[type="checkbox"]:checked {
-  background-color: #0a84ff; /* Soft blue */
+  background-color: #0a84ff;
   border-color: #0a84ff;
 }
 
 .remember-me input[type="checkbox"]:checked::after {
   content: '✓';
   color: white;
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: bold;
   position: absolute;
-  top: 0px;
-  left: 3px;
+  top: 1px;
+  left: 4px;
 }
 
-/* Remember Me Text */
+/* Label text */
 .remember-me label {
-  color: #ffffff;
+  color: #d1d1d1;
   font-size: 0.9rem;
 }
 
