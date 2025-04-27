@@ -1,47 +1,85 @@
+/* --- Page Background --- */
 .welcome-container {
-  background-image: url('welcome-background.png');
+  background-image: url('welcome-background.png'); /* Your artistic food background */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   min-height: 100vh;
   display: flex;
-  flex-direction: column; /* <== Important */
   justify-content: center;
-  align-items: center;    /* <== Important */
+  align-items: center;
   font-family: Arial, sans-serif;
-  text-align: center;
-  padding: 2rem; /* Some breathing space */
+  padding: 2rem;
 }
 
+/* --- Glass Box --- */
+.glass-box {
+  background: rgba(32, 33, 35, 0.4); /* Dark semi-transparent */
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px); /* For Safari */
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 3rem 2rem;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+}
+
+/* --- Heading and Text --- */
 .heading {
-  font-size: 1rem;
+  font-size: 1.8rem;
   margin-bottom: 1rem;
-  color: #d1d1d1; /* Light gray text for better contrast */
+  color: #d1d1d1; /* Light gray text */
 }
 
 .subtext {
   font-size: 1rem;
-  margin-bottom: 1rem;
-  color: #d1d1d1; /* Light gray text for better contrast */
+  margin-bottom: 2rem;
+  color: #d1d1d1; /* Light gray text */
 }
 
+/* --- Buttons --- */
 .button-container {
   display: flex;
   gap: 1rem;
   justify-content: center;
 }
 
-.login-button, .signup-button {
+.login-button,
+.signup-button {
+  background-color: #0FA474; /* Green tone */
+  color: white;
+  border: none;
   padding: 0.8rem 1.5rem;
   font-size: 1rem;
-  border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  background-color: #0FA474; /* Green color for buttons */
-  color: white;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.login-button:hover, .signup-button:hover {
-  background-color: #0d8e66; /* Slightly darker green on hover */
+.login-button:hover,
+.signup-button:hover {
+  background-color: #0d8e66; /* Darker green */
+  transform: translateY(-2px); /* Small lift on hover */
+}
+
+/* --- Optional: Responsive Tweak --- */
+@media (max-width: 600px) {
+  .glass-box {
+    padding: 2rem 1rem;
+  }
+
+  .heading {
+    font-size: 1.5rem;
+  }
+
+  .subtext {
+    font-size: 0.9rem;
+  }
+
+  .button-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 }

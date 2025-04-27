@@ -37,15 +37,19 @@ const WelcomePage = () => {
   };
 
   return (
-    <div className="welcome-container">
-      <h1 className="heading">Welcome to YourHungry AI - your online culinary assistant.</h1>
-      <p className="subtext">Log in or Sign up to continue</p>
-      <div className="button-container">
-        <button className="login-button" onClick={handleLoginClick}>Log in</button>
-        <button className="signup-button" onClick={handleSignupClick}>Sign up</button>
+    <div className="welcome-background">
+      <div className="welcome-container">
+        <div className="glass-box">
+          <h1 className="heading">Welcome to YourHungry AI - your online culinary assistant.</h1>
+          <p className="subtext">Log in or Sign up to continue</p>
+          <div className="button-container">
+            <button className="login-button" onClick={handleLoginClick}>Log in</button>
+            <button className="signup-button" onClick={handleSignupClick}>Sign up</button>
+          </div>
+        </div>
       </div>
     </div>
   );
-};
+}  
 
 export default WelcomePage;
