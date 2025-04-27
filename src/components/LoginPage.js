@@ -112,7 +112,7 @@ const LoginPage = () => {
             {error}
           </div>
         )}
-        <p><b>Welcome back</b></p>
+        <p classname="welcome-heading"><b>Welcome back</b></p>
         <input
           type="email"
           placeholder="Email address"
