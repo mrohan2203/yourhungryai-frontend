@@ -131,16 +131,6 @@
   margin-right: 0.5rem;
 }
 
-.remember-me input[type="checkbox"]:checked::after {
-  content: "✔";
-  background: #0FA474;
-  color: #d1d1d1;
-  font-size: 14px;
-  position: absolute;
-  top: 0;
-  left: 3px;
-}
-
 .remember-me label {
   color: #d1d1d1;
   font-size: 0.9rem;
