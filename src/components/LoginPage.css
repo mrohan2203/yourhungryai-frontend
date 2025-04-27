@@ -156,6 +156,7 @@
   width: 100%;
   max-width: 300px;
   margin: 1rem auto;
+  color: #d1d1d1;
 }
 
 .or-divider::before,
