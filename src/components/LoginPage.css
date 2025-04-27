@@ -133,7 +133,8 @@
 
 .remember-me input[type="checkbox"]:checked::after {
   content: "✔";
-  color: #0FA474;
+  background: #0FA474;
+  color: #d1d1d1;
   font-size: 14px;
   position: absolute;
   top: 0;
