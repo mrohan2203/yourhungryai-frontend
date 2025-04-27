@@ -26,6 +26,13 @@
   color: #d1d1d1;
 }
 
+.welcome-heading {
+  font-size: 1.8rem; /* bigger only for Welcome back */
+  font-weight: bold;
+  color: #d1d1d1;
+  margin-bottom: 1.5rem;
+}
+
 /* All text inside glass box */
 .glass-box p,
 .glass-box label,
