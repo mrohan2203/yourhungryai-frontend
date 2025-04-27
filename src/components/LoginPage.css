@@ -116,13 +116,13 @@
 
 .remember-me {
   display: flex;
-  justify-content: center; /* Center the whole group */
+  justify-content: flex-start; /* align starting */
   align-items: center;
-  gap: 0.5rem;
   width: 100%;
-  max-width: 300px; /* Same width as input fields */
-  margin: 0 auto 1rem auto; /* Center horizontally */
-  text-align: center;
+  max-width: 300px; /* same as input */
+  margin: 0 auto 1rem auto; /* center the whole block */
+  padding-left: 0.5rem; /* slight left padding inside */
+  gap: 0.5rem;
 }
 
 /* Checkbox */
@@ -137,7 +137,7 @@
   position: relative;
 }
 
-/* Checked State */
+/* Checked state */
 .remember-me input[type="checkbox"]:checked {
   background-color: #0a84ff;
   border-color: #0a84ff;
