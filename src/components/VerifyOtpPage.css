@@ -22,7 +22,7 @@
     width: 100%;
     max-width: 400px;
     text-align: center;
-    color: #d1d1d1;
+    color: #ffffff;
   }
   
   /* Logo */
@@ -36,7 +36,7 @@
   .glass-box p,
   .glass-box label,
   .glass-box span {
-    color: #d1d1d1;
+    color: #ffffff;
   }
   
   .subtext {
@@ -53,13 +53,13 @@
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.5rem;
-    color: #d1d1d1;
+    color: #ffffff;
     outline: none;
     font-size: 1rem;
   }
   
   .glass-box input::placeholder {
-    color: #d1d1d1;
+    color: #ffffff;
   }
   
   /* Button */
@@ -68,7 +68,7 @@
     padding: 0.8rem;
     font-size: 1rem;
     background-color: #0FA474;
-    color: #d1d1d1;
+    color: #ffffff;
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
@@ -115,7 +115,7 @@
   /* Back link */
   .back-to-login-text {
     font-size: 0.9rem;
-    color: #d1d1d1;
+    color: #ffffff;
     margin-top: 1rem;
   }
   
