@@ -77,7 +77,7 @@
 .glass-box input[type="password"],
 .social-buttons button {
   width: 100%;
-  max-width: 300px;
+  max-width: 275px;
   padding: 0.8rem;
   margin-bottom: 1rem;
   background: rgba(255, 255, 255, 0.1);
@@ -164,6 +164,7 @@
 
 .social-buttons button{
   width: 100%;
+  max-width: 275px;
   padding: 0.8rem;
   background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
