@@ -4,7 +4,7 @@ import "./LoginPage.css";
 import successIcon from "./success-icon.svg";
 import errorIcon from "./error-icon.svg";
 import googleLogo from "./google-icon.svg";
-import githubLogo from "./github-icon.svg";
+import githubLogo from "./discord-icon.svg";
 import yourhungrylogo from "./yourhungry-logo.png";
 import './WelcomePage.css';
 
