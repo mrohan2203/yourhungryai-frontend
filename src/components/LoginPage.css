@@ -114,16 +114,14 @@
   border-color: #0fa474;
 }
 
-/* Remember Me Container */
 .remember-me {
   display: flex;
+  justify-content: center; /* Center the whole group */
   align-items: center;
-  justify-content: center; /* <-- Forcefully center the checkbox+label */
   gap: 0.5rem;
   width: 100%;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-  color: #d1d1d1;
+  max-width: 300px; /* Same width as input fields */
+  margin: 0 auto 1rem auto; /* Center horizontally */
   text-align: center;
 }
 
@@ -137,10 +135,9 @@
   border-radius: 4px;
   cursor: pointer;
   position: relative;
-  display: inline-block;
 }
 
-/* Checked state */
+/* Checked State */
 .remember-me input[type="checkbox"]:checked {
   background-color: #0a84ff;
   border-color: #0a84ff;
@@ -156,10 +153,11 @@
   left: 4px;
 }
 
-/* Label text */
+/* Label */
 .remember-me label {
-  color: #d1d1d1;
   font-size: 0.9rem;
+  color: #d1d1d1;
+  cursor: pointer;
 }
 
 /* Continue button */
