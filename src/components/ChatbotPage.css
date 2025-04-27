@@ -736,3 +736,84 @@
     margin: 0.5rem 0;
   }
 }
+
+/* Even better responsiveness below 768px */
+@media (max-width: 768px) {
+  .chatbot-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+  }
+
+  .new-chat-section,
+  .chat-log-container {
+    display: none;
+  }
+
+  .sidebar-bottom {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0;
+  }
+
+  .main-content {
+    padding: 1rem;
+    flex: 1;
+  }
+
+  .chatbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    padding: 0.5rem;
+  }
+
+  .messages-container {
+    margin-bottom: 70px; /* space for fixed chatbar */
+    padding: 1rem;
+  }
+}
+
+/* Even tighter adjustments for very small screens */
+@media (max-width: 480px) {
+  .sidebar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.5rem;
+  }
+
+  .sidebar-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-profile {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .messages-container {
+    padding: 0.5rem;
+  }
+
+  .chatbar input {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+
+  .send-icon {
+    width: 24px;
+    height: 24px;
+  }
+}
