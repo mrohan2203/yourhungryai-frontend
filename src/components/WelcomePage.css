@@ -14,7 +14,7 @@
 
 /* --- Glass Box --- */
 .glass-box {
-  background: rgba(32, 33, 35, 0.4); /* Dark semi-transparent */
+  background: rgba(32, 33, 35, 0.7); /* Dark semi-transparent */
   backdrop-filter: blur(10px); 
   -webkit-backdrop-filter: blur(10px); /* For Safari */
   border-radius: 16px;
