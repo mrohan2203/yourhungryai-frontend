@@ -33,6 +33,14 @@
   display: block;
 }
 
+.signup.text {
+  font-size: 1.8rem;
+}
+
+.login-text {
+  font-size: 0.9rem;;
+}
+
 /* Heading */
 .glass-box p {
   font-weight: normal;
