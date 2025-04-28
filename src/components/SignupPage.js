@@ -49,7 +49,7 @@ const SignupPage = () => {
             {error}
           </div>
         )}
-        <p className="signup-text"><b>YourAI says Hello!</b></p>
+        <p className="signup-welcome"><b>YourAI says Hello!</b></p>
         <input
           type="email"
           placeholder="Email address"
