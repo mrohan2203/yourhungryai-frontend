@@ -38,7 +38,8 @@
 }
 
 .login-text {
-  font-size: 0.9rem;;
+  font-size: 0.9rem;
+  margin-top: 1rem;
 }
 
 /* Heading */
@@ -89,11 +90,7 @@
   background-color: #0d8e66;
 }
 
-/* Login text */
-.login-text {
-  font-size: 0.9rem;
-  margin-top: 1rem;
-}
+
 
 .login-text span {
   color: #0FA474;
