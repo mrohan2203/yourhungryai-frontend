@@ -233,3 +233,13 @@
   height: 24px;
   margin-right: 10px;
 }
+
+/* Responsive fix for success and error messages */
+@media (max-width: 600px) {
+  .success-message-container,
+  .error {
+    font-size: 0.7rem;
+    padding: 0.6rem;
+    max-width: 90%;
+  }
+}
