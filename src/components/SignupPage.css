@@ -100,6 +100,8 @@
   padding: 0.8rem;
   background-color: rgba(255, 0, 0, 0.1);
   color: #ff0000;
+  word-wrap: break-word;  /* ⬅ important to avoid overflow */
+  overflow-wrap: break-word;
   text-align: center;
   font-size: 0.75rem;
   font-weight: normal;
@@ -117,20 +119,17 @@
   height: 16px;
 }
 
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  .glass-box {
-    padding: 1.5rem;
-  }
-
-  .glass-box .page-heading {
-    font-size: 1.5rem;
-  }
-
+/* MOBILE specific tweaks */
+@media (max-width: 480px) {
   .success-message-container,
   .error {
-    font-size: 0.7rem;
+    max-width: 90%; /* use almost full width */
+    font-size: 0.85rem;
     padding: 0.6rem;
-    max-width: 90%;
+  }
+
+  .message-icon {
+    width: 16px;
+    height: 16px;
   }
 }

@@ -83,6 +83,8 @@
     width: 90%;
     padding: 0.8rem;
     font-size: 0.75rem;
+    word-wrap: break-word;  /* ⬅ important to avoid overflow */
+    overflow-wrap: break-word;
     text-align: center;
     border-radius: 5px;
     margin-bottom: 1rem;
@@ -122,22 +124,17 @@
     font-weight: bold;
   }
 
-  /* Responsive adjustments */
-@media (max-width: 600px) {
-  .glass-box {
-    padding: 1.5rem;
-    width: 90%; /* Now it automatically adapts */
-    font-size: 0.7rem;
-  }
-
-  .glass-box .page-heading {
-    font-size: 1.5rem;
-  }
-
+/* MOBILE specific tweaks */
+@media (max-width: 480px) {
   .success-message-container,
   .error {
-    font-size: 0.7rem;
+    max-width: 90%; /* use almost full width */
+    font-size: 0.85rem;
     padding: 0.6rem;
-    max-width: 90%;
+  }
+
+  .message-icon {
+    width: 16px;
+    height: 16px;
   }
 }

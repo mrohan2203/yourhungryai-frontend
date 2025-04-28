@@ -48,6 +48,8 @@
   padding: 0.8rem;
   background-color: rgba(15, 164, 116, 0.1); /* Green for success */
   color: #0FA474;
+  word-wrap: break-word;  /* ⬅ important to avoid overflow */
+  overflow-wrap: break-word;
   text-align: center;
   font-size: 0.75rem;
   margin: 0 auto 1rem auto; /* <-- Center align */
@@ -234,12 +236,17 @@
   margin-right: 10px;
 }
 
-/* Responsive fix for success and error messages */
-@media (max-width: 600px) {
+/* MOBILE specific tweaks */
+@media (max-width: 480px) {
   .success-message-container,
   .error {
-    font-size: 0.7rem;
+    max-width: 90%; /* use almost full width */
+    font-size: 0.85rem;
     padding: 0.6rem;
-    max-width: 90%;
+  }
+
+  .message-icon {
+    width: 16px;
+    height: 16px;
   }
 }
