@@ -27,10 +27,9 @@
 }
 
 .welcome-heading {
-  font-size: 1.8rem; /* bigger only for Welcome back */
-  font-weight: bold;
-  color: #ffffff;
-  margin-bottom: 1.5rem;
+  font-size: 1.8rem; /* or 2rem if you want it even bigger */
+  margin-bottom: 1rem;
+  color: #ffffff; /* match the text color */
 }
 
 /* All text inside glass box */
