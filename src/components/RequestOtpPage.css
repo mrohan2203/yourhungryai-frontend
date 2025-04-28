@@ -80,7 +80,7 @@
   /* Success/Error */
   .success-message-container,
   .error {
-    width: 100%;
+    width: 90%;
     padding: 0.8rem;
     font-size: 0.75rem;
     text-align: center;
@@ -126,6 +126,8 @@
 @media (max-width: 600px) {
   .glass-box {
     padding: 1.5rem;
+    width: 90%; /* Now it automatically adapts */
+    font-size: 0.7rem;
   }
 
   .glass-box .page-heading {
