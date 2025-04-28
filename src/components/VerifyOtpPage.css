@@ -124,3 +124,21 @@
     cursor: pointer;
     font-weight: bold;
   }
+
+  /* Responsive adjustments */
+@media (max-width: 600px) {
+  .glass-box {
+    padding: 1.5rem;
+  }
+
+  .glass-box .page-heading {
+    font-size: 1.5rem;
+  }
+
+  .success-message-container,
+  .error {
+    font-size: 0.7rem;
+    padding: 0.6rem;
+    max-width: 90%;
+  }
+}
